@@ -1,6 +1,7 @@
 import { sequelize } from '@/database'
 import { type UserModel } from '@/types/models'
 import { DataTypes, type ModelStatic } from 'sequelize'
+import Role from './Role'
 
 const User: ModelStatic<UserModel> = sequelize.define<UserModel>('users', {
   userId: {
@@ -10,11 +11,11 @@ const User: ModelStatic<UserModel> = sequelize.define<UserModel>('users', {
     field: 'user_id'
   },
   name: {
-    type: DataTypes.STRING({ length: 100 }),
+    type: DataTypes.STRING(100),
     allowNull: false
   },
   lastname: {
-    type: DataTypes.STRING({ length: 100 }),
+    type: DataTypes.STRING(100),
     defaultValue: ''
   },
   fullname: {
@@ -22,9 +23,14 @@ const User: ModelStatic<UserModel> = sequelize.define<UserModel>('users', {
     allowNull: true,
     field: 'fullname'
   },
+  profileUrl: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
   email: {
     type: DataTypes.STRING,
     allowNull: false,
+    unique: true,
     validate: {
       isEmail: true
     }
@@ -37,9 +43,16 @@ const User: ModelStatic<UserModel> = sequelize.define<UserModel>('users', {
     type: DataTypes.STRING,
     defaultValue: null,
     field: 'remember_token'
+  },
+  roleId: {
+    type: DataTypes.UUID,
+    references: {
+      model: Role
+    }
   }
 }, {
   freezeTableName: true,
+  modelName: 'User',
   paranoid: true,
   hooks: {
     // beforeCreate: async function (user) {
