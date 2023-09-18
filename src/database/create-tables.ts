@@ -1,1 +1,1 @@
-import '@/models/Users'
+import '@/database/relationships'
