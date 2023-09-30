@@ -1,5 +1,6 @@
 import { sequelize } from '@/database'
 import { type UserModel } from '@/types/models'
+import { comparePassword, encryptPassword } from '@/utils/encrypt'
 import { DataTypes, type ModelStatic } from 'sequelize'
 import Role from './Role'
 
@@ -55,26 +56,21 @@ const User: ModelStatic<UserModel> = sequelize.define<UserModel>('users', {
   modelName: 'User',
   paranoid: true,
   hooks: {
-    // beforeCreate: async function (user) {
-    //   const salt = await bcrypt.genSalt(10)
-    //   const saltedPassword = await bcrypt.hash(user.password ?? '', salt)
-    //   user.password = saltedPassword
-    //   user.fullname = `${user.name} ${user.lastname}`.trim()
-    // },
-    // beforeUpdate: async function (user) {
-    //   user.set('fullname', `${user.name} ${user.lastname}`.trim())
-    //   if (user.changed('password')) {
-    //     const salt = await bcrypt.genSalt(10)
-    //     const saltedPassword = await bcrypt.hash(user.password ?? '', salt)
-    //     user.password = saltedPassword
-    //   }
-    // }
+    beforeCreate: async function (user) {
+      user.password = await encryptPassword(user.password ?? '')
+      user.fullname = `${user.name} ${user.lastname}`.trim()
+    },
+    beforeUpdate: async function (user) {
+      user.set('fullname', `${user.name} ${user.lastname}`.trim())
+      if (user.changed('password')) {
+        user.password = await encryptPassword(user.password ?? '')
+      }
+    }
   }
 })
 
-// User.prototype.validPassword = async function (password: string): Promise<boolean> {
-//   const isValid = await bcrypt.compare(password, this.password)
-//   return isValid
-// }
+User.prototype.validPassword = async function (password: string): Promise<boolean> {
+  return await comparePassword(password, this.password)
+}
 
 export default User
