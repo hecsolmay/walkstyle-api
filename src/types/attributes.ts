@@ -8,12 +8,12 @@ export interface TimeStamps {
 export interface UserAttributes extends TimeStamps {
   userId?: string
   name: string
-  lastname: string
-  fullname: string | null
+  lastname?: string
+  fullname?: string 
   email: string
   password?: string
-  profileUrl: string
-  rememberToken: string | null
+  profileUrl?: string
+  rememberToken?: string 
   roleId: string
 }
 
