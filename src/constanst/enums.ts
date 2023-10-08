@@ -13,3 +13,10 @@ export enum STATUS {
   ACTIVE = 'ACTIVE',
   INACTIVE = 'INACTIVE'
 }
+
+export enum METHODS {
+  GET = 'GET',
+  POST = 'POST',
+  PUT = 'PUT',
+  DELETE = 'DELETE'
+}
