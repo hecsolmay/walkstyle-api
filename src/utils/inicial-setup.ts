@@ -1,4 +1,4 @@
-import { Role as RoleEnum } from '@/constanst/enums'
+import { ROLE as RoleEnum } from '@/constanst/enums'
 import Role from '@/models/Role'
 
 export async function createRoles () {
