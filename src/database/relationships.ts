@@ -1,23 +1,28 @@
-import Branch from '@/models/Branch'
+import Brand from '@/models/Brand'
 import Category from '@/models/Category'
-import ProductCategory from '@/models/Products-Category'
 import Gender from '@/models/Gender'
+import Image from '@/models/Image'
 import Product from '@/models/Product'
 import ProductImage from '@/models/Product-Image'
+import ProductCategory from '@/models/Products-Category'
 import Role from '@/models/Role'
 import Sale from '@/models/Sale'
 import SaleProduct from '@/models/Sale-Product'
 import Size from '@/models/Size'
 import User from '@/models/User'
 
-// BRANCH
+// Brand
 
-Branch.hasMany(Product, { foreignKey: 'branchId' })
+Brand.hasMany(Product, { foreignKey: 'brandId' })
+Brand.belongsTo(Image, { as: 'banner', foreignKey: 'bannerId' })
+Brand.belongsTo(Image, { as: 'image', foreignKey: 'imageId' })
 
 // PRODUCT-CATEGORY
 
 Product.belongsToMany(Category, { through: ProductCategory, foreignKey: 'productId' })
 Category.belongsToMany(Product, { through: ProductCategory, foreignKey: 'categoryId' })
+Category.belongsTo(Image, { as: 'banner', foreignKey: 'bannerId' })
+Category.belongsTo(Image, { as: 'image', foreignKey: 'imageId' })
 
 // GENDER
 
@@ -26,6 +31,8 @@ Gender.hasMany(Product, { foreignKey: 'genderId' })
 // PRODUCT-IMAGE
 
 ProductImage.belongsTo(Product, { foreignKey: 'productId' })
+ProductImage.belongsTo(Image, { foreignKey: 'imageId' })
+Image.hasMany(ProductImage, { foreignKey: 'imageId' })
 Product.hasMany(ProductImage, { foreignKey: 'productId' })
 
 // SALE

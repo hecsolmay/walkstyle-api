@@ -25,13 +25,14 @@ export interface ProductAttributes {
   description: string
   price: number
   genderId: string
-  branchId: string
+  brandId: string
 }
 
-export interface BranchAttributes {
-  branchId?: string
+export interface BrandAttributes {
+  brandId?: string
   name: string
-  imageUrl: string | null
+  imageId: string
+  bannerId: string
 }
 
 export interface SizeAttributes {
@@ -45,7 +46,8 @@ export interface SizeAttributes {
 export interface CategoryAttributes {
   categoryId?: string
   name: string
-  imageUrl: string
+  imageId: string
+  bannerId: string
 }
 
 export interface RoleAttributes {
@@ -66,9 +68,7 @@ export interface CategoryProductsAttributes {
 export interface ProductImageAttributes {
   productImageId?: string
   productId: string
-  main: string
-  thumbnail: string
-  preview: string
+  imageId: string
 }
 
 export interface SaleAttributes {
@@ -85,4 +85,11 @@ export interface SaleProductAttributes extends TimeStamps {
   extra?: number
   quantity: number
   total: number
+}
+
+export interface ImageAttributes {
+  imageId?: string
+  main: string
+  preview: string
+  thumbnail: string
 }

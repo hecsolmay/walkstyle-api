@@ -1,8 +1,8 @@
 import { sequelize } from '@/database'
+import Brand from '@/models/Brand'
+import Gender from '@/models/Gender'
 import { type ProductModel } from '@/types/models'
 import { DataTypes, type ModelStatic } from 'sequelize'
-import Gender from './Gender'
-import Branch from './Branch'
 
 const Product: ModelStatic<ProductModel> = sequelize.define<ProductModel>(
   'products',
@@ -31,10 +31,10 @@ const Product: ModelStatic<ProductModel> = sequelize.define<ProductModel>(
         model: Gender
       }
     },
-    branchId: {
+    brandId: {
       type: DataTypes.UUID,
       references: {
-        model: Branch
+        model: Brand
       }
     }
   },
