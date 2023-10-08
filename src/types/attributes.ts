@@ -1,20 +1,22 @@
-import { type Role, type Gender } from '@/constanst/enums'
+import { type GENDER, type ROLE } from '@/constanst/enums'
 
 export interface TimeStamps {
   createdAt?: Date
   updatedAt?: Date
+  deletedAt?: Date
 }
 
 export interface UserAttributes extends TimeStamps {
   userId?: string
   name: string
   lastname?: string
-  fullname?: string 
+  fullname?: string
   email: string
   password?: string
   profileUrl?: string
-  rememberToken?: string 
+  rememberToken?: string
   roleId: string
+  role?: RoleAttributes
 }
 
 export interface ProductAttributes {
@@ -48,12 +50,12 @@ export interface CategoryAttributes {
 
 export interface RoleAttributes {
   roleId?: string
-  name: Role
+  name: ROLE
 }
 
 export interface GenderAttributes {
   genderId?: string
-  name: Gender
+  name: GENDER
 }
 
 export interface CategoryProductsAttributes {

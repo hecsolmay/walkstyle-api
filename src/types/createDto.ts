@@ -1,9 +1,6 @@
-import { Role } from "@/constanst/enums";
-import { RegisterDTO } from "@/schemas/auth";
+import { type ROLE } from '@/constanst/enums'
+import { type RegisterDTO } from '@/types/schemas'
 
-export interface UserCreateDTO extends RegisterDTO{
-    role?: Role
-
-
-
+export interface UserCreateDTO extends RegisterDTO {
+  role?: ROLE
 }
