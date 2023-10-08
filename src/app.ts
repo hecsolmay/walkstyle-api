@@ -1,10 +1,11 @@
 import { API_URL } from '@/config'
 import { ApiEndpoints } from '@/constanst'
+import authRoutes from '@/routes/auth.routes'
+import categoryRoutes from '@/routes/category.routes'
 import cors from 'cors'
 import express from 'express'
 import morgan from 'morgan'
 import path from 'node:path'
-import authRoutes from '@/routes/auth.routes'
 
 const app = express()
 
@@ -28,7 +29,9 @@ app.get('/', (_req, res) => {
 app.get('/api', (_req, res) => {
   res.send('Api docs')
 })
+
 app.use('/api/auth', authRoutes)
+app.use('/api/category', categoryRoutes)
 
 app.get('*', (_req, res) => {
   res.status(404).sendFile(path.join(__dirname, '../public/not-found.html'))
