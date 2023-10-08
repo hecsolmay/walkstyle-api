@@ -1,10 +1,15 @@
-export enum Gender {
+export enum GENDER {
   MALE = 'MALE',
   FEMALE = 'FEMALE',
   KID = 'KID'
 }
 
-export enum Role {
+export enum ROLE {
   ADMIN = 'ADMIN',
   USER = 'USER'
+}
+
+export enum STATUS {
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE'
 }

@@ -17,6 +17,7 @@ const User: ModelStatic<UserModel> = sequelize.define<UserModel>('users', {
   },
   lastname: {
     type: DataTypes.STRING(100),
+    allowNull: true,
     defaultValue: ''
   },
   fullname: {

@@ -1,4 +1,4 @@
-import { Role as RoleEnum } from '@/constanst/enums'
+import { ROLE as RoleEnum } from '@/constanst/enums'
 import { sequelize } from '@/database'
 import { type RoleModel } from '@/types/models'
 import { DataTypes, type ModelStatic } from 'sequelize'

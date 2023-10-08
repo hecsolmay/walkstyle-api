@@ -1,4 +1,4 @@
-import { Gender as GenderEnum } from '@/constanst/enums'
+import { GENDER as GenderEnum } from '@/constanst/enums'
 import { sequelize } from '@/database'
 import { type GenderCategoryModel } from '@/types/models'
 import { DataTypes, type ModelStatic } from 'sequelize'
