@@ -4,7 +4,7 @@ import cors from 'cors'
 import express from 'express'
 import morgan from 'morgan'
 import path from 'node:path'
-import  authRoutes  from '@/routes/auth.routes'
+import authRoutes from '@/routes/auth.routes'
 
 const app = express()
 
@@ -33,7 +33,5 @@ app.use('/api/auth', authRoutes)
 app.get('*', (_req, res) => {
   res.status(404).sendFile(path.join(__dirname, '../public/not-found.html'))
 })
-
-
 
 export default app
