@@ -1,6 +1,7 @@
-import { validateLogin, validateRegister } from '@/schemas/auth'
+import { parseRefreshToken, validateLogin, validateRegister } from '@/schemas/auth'
 import * as services from '@/service/user'
-import { refreshTokenSign, tokenSign } from '@/utils/jwtoken'
+import { ZodValidationError, handleError } from '@/utils/errors'
+import { refreshTokenSign, refreshTokenVerify, tokenSign } from '@/utils/jwtoken'
 import { mapUserAttributes } from '@/utils/mappers'
 import { type Request, type Response } from 'express'
 
@@ -9,7 +10,7 @@ export async function login (req: Request, res: Response) {
     const result = validateLogin(req.body)
 
     if (!result.success) {
-      return res.status(400).json(result.error)
+      throw new ZodValidationError(result.error)
     }
 
     const newUser = result.data
@@ -22,7 +23,7 @@ export async function login (req: Request, res: Response) {
     const isCorrectPassword = await user.validPassword(newUser.password ?? '')
 
     if (!isCorrectPassword) {
-      return res.status(401).json({ message: 'Contraseña incorrecta' })
+      return res.status(400).json({ message: 'Contraseña incorrecta' })
     }
 
     const token = tokenSign(user.userId ?? '')
@@ -31,8 +32,7 @@ export async function login (req: Request, res: Response) {
 
     return res.status(200).json({ user: mappedUser, token })
   } catch (error) {
-    console.error('Error al iniciar sesión:', error)
-    return res.status(500).json({ message: 'Internal Server Error' })
+    return handleError(error, res)
   }
 }
 
@@ -41,7 +41,7 @@ export async function register (req: Request, res: Response) {
     const result = validateRegister(req.body)
 
     if (!result.success) {
-      return res.status(400).json({ error: JSON.parse(result.error.message) })
+      throw new ZodValidationError(result.error)
     }
     const newUser = result.data
 
@@ -68,7 +68,36 @@ export async function register (req: Request, res: Response) {
 
     return res.status(201).json({ message: 'Registro exitoso', user: mappedUser, token })
   } catch (error) {
-    console.error('Error al crear un usuario:', error)
-    return res.status(500).json({ message: 'Internal Server Error' })
+    return handleError(error, res)
+  }
+}
+
+export async function refreshToken (req: Request, res: Response) {
+  try {
+    const result = parseRefreshToken(req.body)
+
+    if (!result.success) {
+      throw new ZodValidationError(result.error)
+    }
+
+    const { refreshToken } = result.data
+
+    const { userId } = refreshTokenVerify(refreshToken)
+
+    const user = await services.getById(userId)
+
+    if (user === null) {
+      return res.status(400).json({ message: 'Hubo un error al procesar su solicitud' })
+    }
+
+    if (user.rememberToken !== refreshToken) {
+      return res.status(403).json({ message: 'Invalid Remember Token', error: 'Forbidden' })
+    }
+
+    const token = tokenSign(user.userId ?? '')
+
+    return res.json({ token })
+  } catch (error) {
+    return handleError(error, res)
   }
 }

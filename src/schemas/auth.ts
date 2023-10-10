@@ -13,6 +13,10 @@ export const loginDTO = z.object({
   })
 })
 
+export function validateLogin (input: any) {
+  return loginDTO.safeParse(input)
+}
+
 export const registerDTO = z.object({
   name: z.string({
     required_error: 'El campo name no puede estar vacío.',
@@ -35,9 +39,17 @@ export const registerDTO = z.object({
   })
 })
 
-export function validateLogin (input: any) {
-  return loginDTO.safeParse(input)
-}
 export function validateRegister (input: any) {
   return registerDTO.safeParse(input)
+}
+
+export const refreshBodyDTO = z.object({
+  refreshToken: z.string({
+    required_error: 'El campo refreshToken no puede estar vacío.',
+    invalid_type_error: 'El campo refreshToken debe ser un string.'
+  })
+})
+
+export function parseRefreshToken (input: any) {
+  return refreshBodyDTO.safeParse(input)
 }
