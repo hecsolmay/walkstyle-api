@@ -1,8 +1,4 @@
-interface PaginationQuery {
-  page: number
-  limit: number
-  offset: number
-}
+import { type PaginationInfo, type PaginationQuery } from '@/types/queries'
 
 const DEFAULT_LIMIT = 10
 const DEFAULT_PAGE = 1
@@ -27,17 +23,6 @@ export function validatePagination (query: any = {}): PaginationQuery {
     limit,
     offset
   }
-}
-
-interface PaginationInfo {
-  currentPage: number
-  limit: number
-  pages: number
-  items: number
-  hasNext: boolean
-  hasPrev: boolean
-  nextPage: number | null
-  prevPage: number | null
 }
 
 interface PaginationInfoParams extends Omit<PaginationQuery, 'offset'> {

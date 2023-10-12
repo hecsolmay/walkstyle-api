@@ -6,6 +6,13 @@ export interface TimeStamps {
   deletedAt?: Date
 }
 
+export interface BannerAndImage {
+  bannerId: string
+  banner?: ImageAttributes
+  imageId: string
+  image?: ImageAttributes
+}
+
 export interface UserAttributes extends TimeStamps {
   userId?: string
   name: string
@@ -28,11 +35,9 @@ export interface ProductAttributes {
   brandId: string
 }
 
-export interface BrandAttributes {
+export interface BrandAttributes extends BannerAndImage, TimeStamps {
   brandId?: string
   name: string
-  imageId: string
-  bannerId: string
 }
 
 export interface SizeAttributes {
@@ -43,11 +48,9 @@ export interface SizeAttributes {
   productId: string
 }
 
-export interface CategoryAttributes {
+export interface CategoryAttributes extends BannerAndImage, TimeStamps {
   categoryId?: string
   name: string
-  imageId: string
-  bannerId: string
 }
 
 export interface RoleAttributes {
