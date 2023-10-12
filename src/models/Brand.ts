@@ -29,7 +29,8 @@ const Brand: ModelStatic<BrandModel> = sequelize.define<BrandModel>('brands', {
 }, {
   freezeTableName: true,
   modelName: 'Brand',
-  timestamps: true
+  timestamps: true,
+  paranoid: true
 })
 
 export default Brand

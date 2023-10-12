@@ -24,7 +24,8 @@ const Sale: ModelStatic<SaleModel> = sequelize.define<SaleModel>('sales', {
 }, {
   freezeTableName: true,
   modelName: 'Sale',
-  timestamps: true
+  timestamps: true,
+  paranoid: true
 })
 
 export default Sale

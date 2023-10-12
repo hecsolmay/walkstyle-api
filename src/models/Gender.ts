@@ -19,7 +19,8 @@ const Gender: ModelStatic<GenderCategoryModel> = sequelize.define<GenderCategory
 }, {
   freezeTableName: true,
   modelName: 'Gender',
-  timestamps: true
+  timestamps: true,
+  paranoid: true
 })
 
 export default Gender

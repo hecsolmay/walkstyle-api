@@ -29,7 +29,8 @@ const Category: ModelStatic<CategoryModel> = sequelize.define<CategoryModel>('ca
 }, {
   freezeTableName: true,
   modelName: 'Category',
-  timestamps: true
+  timestamps: true,
+  paranoid: true
 })
 
 export default Category

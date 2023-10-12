@@ -33,7 +33,8 @@ const Size: ModelStatic<SizeModel> = sequelize.define<SizeModel>('sizes', {
 }, {
   freezeTableName: true,
   modelName: 'Size',
-  timestamps: true
+  timestamps: true,
+  paranoid: true
 })
 
 export default Size

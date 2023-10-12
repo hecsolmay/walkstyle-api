@@ -19,7 +19,8 @@ const Role: ModelStatic<RoleModel> = sequelize.define<RoleModel>('roles', {
 }, {
   freezeTableName: true,
   modelName: 'Role',
-  timestamps: true
+  timestamps: true,
+  paranoid: true
 })
 
 export default Role
