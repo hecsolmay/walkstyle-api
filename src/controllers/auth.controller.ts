@@ -14,7 +14,7 @@ export async function login (req: Request, res: Response) {
     }
 
     const newUser = result.data
-    const user = await services.getOne({ email: newUser.email })
+    const user = await services.GetOne({ email: newUser.email })
 
     if (user === null) {
       return res.status(404).json({ message: 'Usuario no encontrado' })
@@ -45,20 +45,20 @@ export async function register (req: Request, res: Response) {
     }
     const newUser = result.data
 
-    const existingUser = await services.getOne({ email: newUser.email })
+    const existingUser = await services.GetOne({ email: newUser.email })
 
     if (existingUser !== null) {
       return res.status(409).json({ message: 'El correo electrónico ya está en uso.' })
     }
 
-    const user = await services.create(newUser)
+    const user = await services.Create(newUser)
 
     const token = tokenSign(user.userId ?? '')
     const refreshToken = refreshTokenSign(user.userId ?? '')
 
     await user.update({ rememberToken: refreshToken })
 
-    const userWithRole = await services.getById(user.userId ?? '')
+    const userWithRole = await services.GetById(user.userId ?? '')
 
     if (userWithRole === null) {
       return res.status(400).json({ message: 'Hubo un error al procesar su solicitud' })
@@ -84,7 +84,7 @@ export async function refreshToken (req: Request, res: Response) {
 
     const { userId } = refreshTokenVerify(refreshToken)
 
-    const user = await services.getById(userId)
+    const user = await services.GetById(userId)
 
     if (user === null) {
       return res.status(400).json({ message: 'Hubo un error al procesar su solicitud' })

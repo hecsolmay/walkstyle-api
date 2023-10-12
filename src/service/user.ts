@@ -3,12 +3,12 @@ import Role from '@/models/Role'
 import User from '@/models/User'
 import { type UserCreateDTO } from '@/types/createDto'
 
-export async function getAll () {
+export async function GetAll () {
   const users = await User.findAll()
   return users
 }
 
-export async function getById (id: string) {
+export async function GetById (id: string) {
   const user = await User.findOne({
     include: {
       model: Role,
@@ -21,7 +21,7 @@ export async function getById (id: string) {
   return user
 }
 
-export async function create (user: UserCreateDTO) {
+export async function Create (user: UserCreateDTO) {
   const { role = RoleEnum.USER, ...rest } = user
   const foundRole = await Role.findOne({
     where: {
@@ -36,7 +36,7 @@ interface Params {
   email: string // Declarar una propiedad 'email' en el objeto Params
 }
 
-export async function getOne (params: Params) {
+export async function GetOne (params: Params) {
   const { email } = params
   // Ahora puedes acceder a 'email' dentro del objeto 'params'
   const user = await User.findOne({
