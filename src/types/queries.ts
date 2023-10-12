@@ -21,3 +21,6 @@ export interface PaginationInfo {
 export type SearchParam = z.infer<typeof searchSchema>
 
 export interface PaginationWithSearch extends PaginationQuery, SearchParam {}
+export interface QueryWithDeleted extends PaginationWithSearch {
+  getDeleted?: boolean
+}

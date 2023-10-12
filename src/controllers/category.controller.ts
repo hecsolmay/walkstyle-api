@@ -1,7 +1,7 @@
 import { validateCategory } from '@/schemas/category'
 import { getInfoPagination, validatePagination } from '@/schemas/pagination'
 import { validateSearch } from '@/schemas/query'
-import { Create, GetAll, GetById } from '@/service/category'
+import { Create, DeleteById, GetAll, GetById, RestoreById } from '@/service/category'
 import { handleError } from '@/utils/errors'
 import { mapCategoryAttributes } from '@/utils/mappers'
 import { type Request, type Response } from 'express'
@@ -14,6 +14,23 @@ export async function getCategories (req: Request, res: Response) {
     const { categories, count } = await GetAll({ ...pagination, ...query })
 
     const mappedCategories = categories.map(category => mapCategoryAttributes(category.toJSON()))
+
+    const info = getInfoPagination({ ...pagination, count })
+
+    return res.status(200).json({ info, categories: mappedCategories })
+  } catch (error) {
+    return handleError(error, res)
+  }
+}
+
+export async function getCategoriesDeleted (req: Request, res: Response) {
+  try {
+    const pagination = validatePagination(req.query)
+    const query = validateSearch(req.query)
+
+    const { categories, count } = await GetAll({ ...pagination, ...query, getDeleted: true })
+
+    const mappedCategories = categories.map(category => mapCategoryAttributes(category.toJSON(), true))
 
     const info = getInfoPagination({ ...pagination, count })
 
@@ -59,6 +76,34 @@ export async function createCategory (req: Request, res: Response) {
     const mappedCategory = mapCategoryAttributes(category.toJSON())
 
     return res.status(201).json({ message: 'Category created', category: mappedCategory })
+  } catch (error) {
+    return handleError(error, res)
+  }
+}
+
+export async function deleteCategory (req: Request, res: Response) {
+  try {
+    const deletedCount = await DeleteById(req.params.categoryId)
+
+    if (deletedCount === 0) {
+      return res.status(404).json({ message: 'Category not found' })
+    }
+
+    return res.sendStatus(204)
+  } catch (error) {
+    return handleError(error, res)
+  }
+}
+
+export async function restoreCategory (req: Request, res: Response) {
+  try {
+    const categoryRestore = await RestoreById(req.params.categoryId)
+
+    if (categoryRestore === null) {
+      return res.status(404).json({ message: 'Category not found' })
+    }
+
+    return res.json({ message: 'Category restored', category: mapCategoryAttributes(categoryRestore.toJSON()) })
   } catch (error) {
     return handleError(error, res)
   }
