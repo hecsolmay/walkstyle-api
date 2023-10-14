@@ -31,7 +31,7 @@ app.get('/api', (_req, res) => {
 })
 
 app.use('/api/auth', authRoutes)
-app.use('/api/category', categoryRoutes)
+app.use('/api/categories', categoryRoutes)
 
 app.get('*', (_req, res) => {
   res.status(404).sendFile(path.join(__dirname, '../public/not-found.html'))

@@ -20,7 +20,7 @@ interface Props {
   path?: string
 }
 
-const DEFAULT_FOLDER = 'walkstyle'
+const DEFAULT_FOLDER = process.env.NODE_ENV === 'production' ? 'walkstyle' : 'walkstyle-dev'
 
 export function transformCloudinaryUrl (url: string, params: string): string {
   const parts = url.split('/upload/')
