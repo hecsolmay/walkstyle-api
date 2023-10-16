@@ -1,5 +1,5 @@
 import { ROLE, STATUS } from '@/constanst/enums'
-import { type CategoryAttributes, type ImageAttributes, type UserAttributes } from '@/types/attributes'
+import { type BrandAttributes, type CategoryAttributes, type ImageAttributes, type UserAttributes } from '@/types/attributes'
 
 export function mapImageAtributes (image?: ImageAttributes) {
   if (image === undefined) {
@@ -46,6 +46,30 @@ export function mapCategoryAttributes (category: CategoryAttributes, timeStamps 
 
   const response = {
     categoryId,
+    name,
+    banner: mapImageAtributes(banner),
+    image: mapImageAtributes(image)
+  }
+
+  if (timeStamps) {
+    const status = getStatus(Boolean(deletedAt))
+
+    return {
+      ...response,
+      status,
+      createdAt,
+      updatedAt
+    }
+  }
+
+  return response
+}
+
+export function mapBrandsAttributes (brand: BrandAttributes, timeStamps = false) {
+  const { brandId, name, banner, image, createdAt, deletedAt, updatedAt } = brand
+
+  const response = {
+    brandId,
     name,
     banner: mapImageAtributes(banner),
     image: mapImageAtributes(image)
