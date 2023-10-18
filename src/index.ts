@@ -1,5 +1,5 @@
 import app from '@/app'
-import { API_URL, PORT } from '@/config'
+import { PORT } from '@/config'
 import { sequelize } from '@/database'
 import '@/database/create-tables'
 import { createRoles } from '@/utils/inicial-setup'
@@ -7,17 +7,17 @@ import { createRoles } from '@/utils/inicial-setup'
 async function main () {
   try {
     console.log('Connecting to the database...')
-    console.log(`Aplication Port: ${PORT}`)
     await sequelize.authenticate()
     await sequelize.sync({ force: false, alter: true })
     console.log('Connection has been established successfully.')
     await createRoles()
-    app.listen(PORT, () => {
-      console.log(`Server is running on  ${API_URL}:${PORT}`)
-    })
   } catch (error) {
     console.error('Unable to connect to the database:', error)
   }
 }
 
 main()
+console.log(`Aplication Port: ${PORT}`)
+app.listen(PORT, () => {
+  console.log(`Server is running on  Port ${PORT}`)
+})
