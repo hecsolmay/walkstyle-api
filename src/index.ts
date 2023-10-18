@@ -6,6 +6,8 @@ import { createRoles } from '@/utils/inicial-setup'
 
 async function main () {
   try {
+    console.log('Connecting to the database...')
+    console.log(`Aplication Port: ${PORT}`)
     await sequelize.authenticate()
     await sequelize.sync({ force: false, alter: true })
     console.log('Connection has been established successfully.')
