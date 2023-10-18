@@ -31,11 +31,7 @@ const User: ModelStatic<UserModel> = sequelize.define<UserModel>('users', {
   },
   email: {
     type: DataTypes.STRING,
-    allowNull: false,
-    unique: true,
-    validate: {
-      isEmail: true
-    }
+    allowNull: false
   },
   password: {
     type: DataTypes.STRING,
