@@ -13,11 +13,18 @@ async function main () {
     await createRoles()
   } catch (error) {
     console.error('Unable to connect to the database:', error)
+    throw error
   }
 }
 
-main()
-console.log(`Aplication Port: ${PORT}`)
-app.listen(PORT, () => {
-  console.log(`Server is running on  Port ${PORT}`)
-})
+(async () => {
+  try {
+    await main()
+    console.log(`Aplication Port: ${PORT}`)
+    app.listen(PORT, () => {
+      console.log(`Server is running on  Port ${PORT}`)
+    })
+  } catch (error) {
+
+  }
+})()
