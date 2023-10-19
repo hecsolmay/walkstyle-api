@@ -47,6 +47,7 @@ Size.belongsTo(Product, { foreignKey: 'productId' })
 
 Product.hasMany(Size, { foreignKey: 'productId' })
 Product.belongsTo(Gender, { foreignKey: 'genderId' })
+Product.belongsTo(Brand, { foreignKey: 'brandId' })
 
 // SALE-PRODUCT
 
