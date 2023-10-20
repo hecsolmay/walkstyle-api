@@ -72,6 +72,7 @@ export async function uploadBannerAndImage (req: Request, res: Response, next: N
 export async function uploadMultipleImages (req: Request, res: Response, next: NextFunction) {
   try {
     const files = req.files as Express.Multer.File[] | undefined
+    req.body.images = []
 
     if (files === undefined) {
       next()
@@ -80,7 +81,7 @@ export async function uploadMultipleImages (req: Request, res: Response, next: N
 
     const uploadFiles = files.map(async file => await uploadImageToCloudinaryAndSaveToDB(file.buffer, '/products'))
     const images = await Promise.all(uploadFiles)
-    req.body.images = images
+    req.body.images = images.map(image => image.toJSON())
 
     next()
     // eslint-disable-next-line no-useless-return
