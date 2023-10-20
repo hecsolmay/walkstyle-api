@@ -89,7 +89,7 @@ export interface SaleProductAttributes extends TimeStamps {
   saleId: string
   sizeId: string
   originalPrice: number
-  extra?: number
+  extraPrice?: number
   quantity: number
   total: number
 }

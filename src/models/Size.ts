@@ -13,11 +13,17 @@ const Size: ModelStatic<SizeModel> = sequelize.define<SizeModel>('sizes', {
   extraPrice: {
     type: DataTypes.DECIMAL(10, 2),
     defaultValue: 0,
-    allowNull: false
+    allowNull: false,
+    get () {
+      return Number(this.getDataValue('extraPrice'))
+    }
   },
   size: {
     type: DataTypes.DECIMAL(10, 1),
-    allowNull: false
+    allowNull: false,
+    get () {
+      return Number(this.getDataValue('size'))
+    }
   },
   stock: {
     type: DataTypes.INTEGER,

@@ -4,6 +4,7 @@ import authRoutes from '@/routes/auth.routes'
 import brandRoutes from '@/routes/brand.routes'
 import categoryRoutes from '@/routes/category.routes'
 import productRoutes from '@/routes/product.routes'
+import sizeRouters from '@/routes/size.routes'
 import cors from 'cors'
 import express from 'express'
 import morgan from 'morgan'
@@ -33,9 +34,10 @@ app.get('/api', (_req, res) => {
 })
 
 app.use('/api/auth', authRoutes)
-app.use('/api/categories', categoryRoutes)
 app.use('/api/brands', brandRoutes)
+app.use('/api/categories', categoryRoutes)
 app.use('/api/products', productRoutes)
+app.use('/api/size', sizeRouters)
 
 app.get('*', (_req, res) => {
   res.status(404).sendFile(path.join(__dirname, '../public/not-found.html'))
