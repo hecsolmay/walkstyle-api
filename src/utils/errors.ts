@@ -1,6 +1,7 @@
 import { type Response } from 'express'
 import { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken'
 import { type ZodError } from 'zod'
+import { ValidationError, ForeignKeyConstraintError } from 'sequelize'
 
 export class MulterValidationError extends Error {
   constructor (message: string) {
@@ -19,6 +20,13 @@ export class ZodValidationError extends Error {
   }
 }
 
+export class UnexpectedError extends Error {
+  constructor (message: string) {
+    super(message)
+    this.name = 'UnexpectedError'
+  }
+}
+
 export function handleError (error: unknown, res: Response): Response<any, Record<string, any>> {
   console.error(error)
 
@@ -28,6 +36,14 @@ export function handleError (error: unknown, res: Response): Response<any, Recor
 
   if (error instanceof JsonWebTokenError) {
     return res.status(400).json({ message: 'Error in the JsonWebToken', error: error.message })
+  }
+
+  if (error instanceof UnexpectedError) {
+    return res.status(400).json({ message: 'Unexpected Error', error: error.message })
+  }
+
+  if (error instanceof ValidationError || error instanceof ForeignKeyConstraintError) {
+    return res.status(400).json({ message: 'Error in the validation', error: error.message })
   }
 
   if (error instanceof ZodValidationError) {
