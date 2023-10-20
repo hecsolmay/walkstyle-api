@@ -1,4 +1,6 @@
 import { z } from 'zod'
+import { imageSchema } from '@/schemas/image'
+import { GENDER } from '@/constanst/enums'
 
 export const productSchema = z.object({
   name: z.string({
@@ -25,10 +27,10 @@ export const productSchema = z.object({
     invalid_type_error: 'Se esperaba un detalle en el producto',
     required_error: 'Se esperaba un detalle en el producto'
   }).trim().toLowerCase().optional().default(''),
-  genderId: z.string({
-    invalid_type_error: 'Se esperaba un genero en el producto',
+  gender: z.nativeEnum(GENDER, {
+    invalid_type_error: `Se esperaba un genero valido en el producto (${Object.values(GENDER).join(', ')})`,
     required_error: 'Se esperaba un genero en el producto'
-  }).uuid({ message: 'Se esperaba un genero valido en el producto' }),
+  }),
   brandId: z.string({
     invalid_type_error: 'Se esperaba una marca en el producto',
     required_error: 'Se esperaba una marca en el producto'
@@ -45,4 +47,10 @@ export function validateProduct (input: any) {
 
 export function partialProduct (input: any) {
   return productSchema.partial().safeParse(input)
+}
+
+export const imageArraySchema = z.array(imageSchema)
+
+export function validateImageArray (input: any) {
+  return imageArraySchema.safeParse(input)
 }

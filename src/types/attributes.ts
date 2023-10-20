@@ -26,13 +26,16 @@ export interface UserAttributes extends TimeStamps {
   role?: RoleAttributes
 }
 
-export interface ProductAttributes {
+export interface ProductAttributes extends TimeStamps {
   productId?: string
   name: string
-  description: string
+  details: string
   price: number
   genderId: string
   brandId: string
+  brand?: BrandAttributes
+  gender?: GenderAttributes
+  product_images?: ProductImageAttributes[]
 }
 
 export interface BrandAttributes extends BannerAndImage, TimeStamps {
@@ -42,7 +45,7 @@ export interface BrandAttributes extends BannerAndImage, TimeStamps {
 
 export interface SizeAttributes {
   sizeId?: string
-  extra: number
+  extraPrice: number
   size: number
   stock: number
   productId: string
@@ -53,25 +56,26 @@ export interface CategoryAttributes extends BannerAndImage, TimeStamps {
   name: string
 }
 
-export interface RoleAttributes {
+export interface RoleAttributes extends TimeStamps {
   roleId?: string
   name: ROLE
 }
 
-export interface GenderAttributes {
+export interface GenderAttributes extends TimeStamps {
   genderId?: string
   name: GENDER
 }
 
-export interface CategoryProductsAttributes {
+export interface CategoryProductsAttributes extends TimeStamps {
   categoryId: string
   productId: string
 }
 
-export interface ProductImageAttributes {
+export interface ProductImageAttributes extends TimeStamps {
   productImageId?: string
   productId: string
   imageId: string
+  image?: ImageAttributes
 }
 
 export interface SaleAttributes {
@@ -90,7 +94,7 @@ export interface SaleProductAttributes extends TimeStamps {
   total: number
 }
 
-export interface ImageAttributes {
+export interface ImageAttributes extends TimeStamps {
   imageId?: string
   main: string
   preview: string

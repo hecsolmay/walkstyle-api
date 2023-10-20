@@ -10,13 +10,13 @@ const Size: ModelStatic<SizeModel> = sequelize.define<SizeModel>('sizes', {
     primaryKey: true,
     field: 'size_id'
   },
-  extra: {
+  extraPrice: {
     type: DataTypes.DECIMAL(10, 2),
     defaultValue: 0,
     allowNull: false
   },
   size: {
-    type: DataTypes.DECIMAL(2, 1),
+    type: DataTypes.DECIMAL(10, 1),
     allowNull: false
   },
   stock: {

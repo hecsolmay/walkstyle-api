@@ -1,5 +1,5 @@
 import { ROLE, STATUS } from '@/constanst/enums'
-import { type BrandAttributes, type CategoryAttributes, type ImageAttributes, type UserAttributes } from '@/types/attributes'
+import { type ProductAttributes, type BrandAttributes, type CategoryAttributes, type ImageAttributes, type UserAttributes } from '@/types/attributes'
 
 export function mapImageAtributes (image?: ImageAttributes) {
   if (image === undefined) {
@@ -87,4 +87,27 @@ export function mapBrandsAttributes (brand: BrandAttributes, timeStamps = false)
   }
 
   return response
+}
+
+export function mapProductAttributes (product: ProductAttributes, timeStamps = false) {
+  const { createdAt, deletedAt, updatedAt, brandId, genderId, product_images: productImages, ...restOfProduct } = product
+
+  const images = productImages?.map(productImage => mapImageAtributes(productImage.image)) ?? []
+
+  if (timeStamps) {
+    const status = getStatus(Boolean(deletedAt))
+
+    return {
+      ...restOfProduct,
+      images,
+      status,
+      createdAt,
+      updatedAt
+    }
+  }
+
+  return {
+    ...restOfProduct,
+    images
+  }
 }
