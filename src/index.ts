@@ -2,7 +2,7 @@ import app from '@/app'
 import { PORT } from '@/config'
 import { sequelize } from '@/database'
 import '@/database/create-tables'
-import { createRoles } from '@/utils/inicial-setup'
+import { createRoles, createGenders } from '@/utils/inicial-setup'
 
 async function main () {
   try {
@@ -10,7 +10,7 @@ async function main () {
     await sequelize.authenticate()
     await sequelize.sync({ force: false, alter: true })
     console.log('Connection has been established successfully.')
-    await createRoles()
+    await Promise.all([createRoles(), createGenders()])
   } catch (error) {
     console.error('Unable to connect to the database:', error)
     throw error
