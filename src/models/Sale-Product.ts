@@ -25,12 +25,18 @@ const SaleProduct: ModelStatic<SaleProductModel> = sequelize.define<SaleProductM
   },
   originalPrice: {
     type: DataTypes.DECIMAL(10, 2),
-    allowNull: false
+    allowNull: false,
+    get () {
+      return Number(this.getDataValue('originalPrice'))
+    }
   },
-  extra: {
+  extraPrice: {
     type: DataTypes.DECIMAL(10, 2),
     allowNull: false,
-    defaultValue: 0
+    defaultValue: 0,
+    get () {
+      return Number(this.getDataValue('extraPrice'))
+    }
   },
   quantity: {
     type: DataTypes.INTEGER,
@@ -38,7 +44,10 @@ const SaleProduct: ModelStatic<SaleProductModel> = sequelize.define<SaleProductM
   },
   total: {
     type: DataTypes.DECIMAL(10, 2),
-    allowNull: false
+    allowNull: false,
+    get () {
+      return Number(this.getDataValue('total'))
+    }
   }
 }, {
   freezeTableName: true,

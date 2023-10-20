@@ -19,7 +19,10 @@ const Sale: ModelStatic<SaleModel> = sequelize.define<SaleModel>('sales', {
   totalPaid: {
     type: DataTypes.DECIMAL(10, 2),
     defaultValue: 0,
-    allowNull: true
+    allowNull: true,
+    get () {
+      return Number(this.getDataValue('totalPaid'))
+    }
   }
 }, {
   freezeTableName: true,

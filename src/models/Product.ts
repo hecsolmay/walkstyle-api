@@ -23,7 +23,10 @@ const Product: ModelStatic<ProductModel> = sequelize.define<ProductModel>(
     },
     price: {
       type: DataTypes.DECIMAL(10, 2),
-      allowNull: false
+      allowNull: false,
+      get () {
+        return Number(this.getDataValue('price'))
+      }
     },
     genderId: {
       type: DataTypes.UUID,
