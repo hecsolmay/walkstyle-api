@@ -30,7 +30,7 @@ export async function getbrandsDeleted (req: Request, res: Response) {
     const query = validateSearch(req.query)
 
     const { brand, count } = await GetAll({ ...pagination, ...query, getDeleted: true })
-    const mappedBrands = brand.map((brand) => mapBrandsAttributes(brand.toJSON()))
+    const mappedBrands = brand.map((brand) => mapBrandsAttributes(brand.toJSON(), true))
 
     const info = getInfoPagination({ ...pagination, count })
 
