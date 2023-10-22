@@ -19,11 +19,11 @@ async function main () {
 
 (async () => {
   try {
-    await main()
-    console.log(`Aplication Port: ${PORT}`)
     app.listen(PORT, () => {
       console.log(`Server is running on  Port ${PORT}`)
     })
+    await main()
+    console.log(`Aplication Port: ${PORT}`)
   } catch (error) {
 
   }
