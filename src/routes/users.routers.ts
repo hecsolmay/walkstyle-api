@@ -4,17 +4,12 @@ import { Router } from 'express'
 const router = Router()
 //
 router.get('/', userCtrl.getUsers)
-//
 router.get('/all', userCtrl.getusersDeleted)
-// //
 router.get('/:userId', userCtrl.getUserById)
-// //
 router.delete('/:userId', userCtrl.deleteUser)
-// //
 router.patch('/restore/:userId', userCtrl.restoreUser)
-// //
-router.patch('/change/:userId', userCtrl.changeUserById)
-// //
-router.put('/:userId',  userCtrl.updateUserById)
+router.patch('/:userId/role', userCtrl.changeRole)
+router.patch('/:userId/restore-password', userCtrl.restorePassword)
+router.put('/:userId', userCtrl.updateUserById)
 
 export default router

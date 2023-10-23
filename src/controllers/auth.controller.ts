@@ -1,5 +1,4 @@
-import { parseRefreshToken, validateLogin } from '@/schemas/auth'
-import { validateUser } from '@/schemas/user'
+import { parseRefreshToken, validateLogin, validateRegister } from '@/schemas/auth'
 import * as services from '@/service/user'
 import { ZodValidationError, handleError } from '@/utils/errors'
 import { refreshTokenSign, refreshTokenVerify, tokenSign } from '@/utils/jwtoken'
@@ -39,7 +38,7 @@ export async function login (req: Request, res: Response) {
 
 export async function register (req: Request, res: Response) {
   try {
-    const result = validateUser(req.body)
+    const result = validateRegister(req.body)
 
     if (!result.success) {
       throw new ZodValidationError(result.error)

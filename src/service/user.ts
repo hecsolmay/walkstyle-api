@@ -4,6 +4,7 @@ import Role from '@/models/Role'
 import User from '@/models/User'
 import { type UserCreateDTO } from '@/types/createDto'
 import { type QueryWithDeleted } from '@/types/queries'
+import { UnexpectedError } from '@/utils/errors'
 import { Op } from 'sequelize'
 
 export async function GetAll ({
@@ -79,17 +80,31 @@ interface UpdateParams {
 }
 
 export async function UpdateById ({ userId, newUser }: UpdateParams) {
-  const { role = ROLE.USER, ...rest } = newUser
+  const { role, ...rest } = newUser
 
-  const newRole = await Role.findOne({
+  const updateUser = { ...rest }
+
+  if (role === undefined) {
+    const [updatedCount] = await User.update(updateUser, {
+      where: {
+        userId
+      }
+    })
+
+    return updatedCount
+  }
+
+  const foundRole = await Role.findOne({
     where: {
       name: role
     }
   })
 
-  const updateUser = { ...rest, roleId: newRole?.roleId ?? '' }
+  if (foundRole === null) {
+    throw new UnexpectedError('Role not found')
+  }
 
-  const [updatedCount] = await User.update(updateUser, {
+  const [updatedCount] = await User.update({ ...updateUser, roleId: foundRole?.roleId ?? '' }, {
     where: {
       userId
     }

@@ -15,11 +15,7 @@ export const userDTO = z.object({
       invalid_type_error: 'El campo email debe ser un string.'
     }
   ).trim().email('El campo email debe ser un correo válido.')
-    .toLowerCase(),
-  password: z.string({
-    required_error: 'El campo password no puede estar vacioso.',
-    invalid_type_error: 'El campo password debe ser un string.'
-  })
+    .toLowerCase()
 })
 
 export function validateUser (input: any) {
@@ -28,4 +24,19 @@ export function validateUser (input: any) {
 
 export function partialUser (input: any) {
   return userDTO.partial().safeParse(input)
+}
+
+export const changePasswordSchema = z.object({
+  oldPassword: z.string({
+    required_error: 'El campo oldPassword no puede estar vacío.',
+    invalid_type_error: 'El campo oldPassword debe ser un string.'
+  }),
+  newPassword: z.string({
+    required_error: 'El campo newPassword no puede estar vacío.',
+    invalid_type_error: 'El campo newPassword debe ser un string.'
+  })
+})
+
+export function validateChangePassword (input: any) {
+  return changePasswordSchema.safeParse(input)
 }
