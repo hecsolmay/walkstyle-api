@@ -36,6 +36,7 @@ export interface ProductAttributes extends TimeStamps {
   brand?: BrandAttributes
   gender?: GenderAttributes
   product_images?: ProductImageAttributes[]
+  categories?: CategoryAttributes[]
 }
 
 export interface BrandAttributes extends BannerAndImage, TimeStamps {

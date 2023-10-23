@@ -90,7 +90,12 @@ export function mapBrandsAttributes (brand: BrandAttributes, timeStamps = false)
 }
 
 export function mapProductAttributes (product: ProductAttributes, timeStamps = false) {
-  const { createdAt, deletedAt, updatedAt, brandId, genderId, product_images: productImages, ...restOfProduct } = product
+  const { createdAt, categories = [], deletedAt, updatedAt, brandId, genderId, product_images: productImages, ...restOfProduct } = product
+
+  const mappedCategories = categories.map(category => ({
+    categoryId: category.categoryId,
+    name: category.name
+  }))
 
   const images = productImages?.map(productImage => mapImageAtributes(productImage.image)) ?? []
 
@@ -99,6 +104,7 @@ export function mapProductAttributes (product: ProductAttributes, timeStamps = f
 
     return {
       ...restOfProduct,
+      categories: mappedCategories,
       images,
       status,
       createdAt,
@@ -108,6 +114,7 @@ export function mapProductAttributes (product: ProductAttributes, timeStamps = f
 
   return {
     ...restOfProduct,
+    categories: mappedCategories,
     images
   }
 }
