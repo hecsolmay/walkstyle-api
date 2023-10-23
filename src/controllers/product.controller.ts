@@ -1,8 +1,10 @@
 import { getInfoPagination, validatePagination } from '@/schemas/pagination'
-import { validateImageArray, validateProduct } from '@/schemas/product'
+import { partialProduct, validateImageArray, validateProduct } from '@/schemas/product'
 import { validateSearch } from '@/schemas/query'
-import { saveImageProduct } from '@/service/image'
-import { Create, DeleteById, GetAll, GetByid, RestoreById } from '@/service/products'
+import { GetAllIn } from '@/service/category'
+import { CreateProductCategory, GetAllProductCategories } from '@/service/category-products'
+import { deletedImagesProduct, saveImageProduct } from '@/service/image'
+import { Create, DeleteById, GetAll, GetByid, RestoreById, UpdateById } from '@/service/products'
 import { CreateSize } from '@/service/size'
 import { ZodValidationError, handleError } from '@/utils/errors'
 import { mapProductAttributes } from '@/utils/mappers'
@@ -74,11 +76,22 @@ export async function createProduct (req: Request, res: Response) {
     const { stock, size, extraPrice, categories, ...productDTO } = result.data
     const images = imagesResult.data
 
+    const notRepeatCategories = new Set(categories)
+    const categoriesArray = Array.from(notRepeatCategories)
+
+    const categoriesModels = await GetAllIn(categoriesArray)
+
+    if (categoriesModels.length !== categoriesArray.length) {
+      return res.status(404).json({ message: 'Category not found' })
+    }
+
     const newProduct = await Create(productDTO)
 
     const promiseSaveImages = images.map(async images => await saveImageProduct({ imageId: images.imageId, productId: newProduct.productId ?? '' }))
 
-    await Promise.all(promiseSaveImages)
+    const promiseCategories = categoriesModels.map(async category => await CreateProductCategory({ categoryId: category.categoryId, productId: newProduct.productId }))
+
+    await Promise.all([promiseSaveImages, promiseCategories])
 
     const newSize = { stock, size, extraPrice, productId: newProduct.productId ?? '' }
 
@@ -86,12 +99,79 @@ export async function createProduct (req: Request, res: Response) {
 
     console.log({ product: newProduct.toJSON() })
 
-    return res.status(201).json({ message: 'Product created', product: newProduct, images, size: sizeCreated, categories })
+    return res.status(201).json({ message: 'Product created', product: newProduct, images, size: sizeCreated })
   } catch (error) {
     return handleError(error, res)
   }
 }
-// export async function updateProduct (req: Request, res: Response) {}
+
+export async function updateProduct (req: Request, res: Response) {
+  try {
+    const productStringized = req.body.product
+    const productParse = JSON.parse(productStringized ?? null)
+
+    const result = partialProduct(productParse)
+
+    if (!result.success) {
+      throw new ZodValidationError(result.error)
+    }
+
+    const resultImage = validateImageArray(req.body.images ?? [])
+
+    if (!resultImage.success) {
+      throw new ZodValidationError(resultImage.error)
+    }
+
+    const { stock, size, extraPrice, categories, ...productDTO } = result.data
+
+    const updatedCount = await UpdateById({ productId: req.params.productId, newProduct: productDTO })
+
+    if (updatedCount === 0) {
+      return res.status(404).json({ message: 'Product not found' })
+    }
+
+    const notRepeatCategories = new Set(categories ?? [])
+    const categoriesArray = Array.from(notRepeatCategories)
+
+    const categoriesModels = await GetAllIn(categoriesArray)
+
+    if (categoriesModels.length !== categoriesArray.length) {
+      return res.status(404).json({ message: 'Category not found' })
+    }
+
+    const categoriesFound = await GetAllProductCategories({ productId: req.params.productId })
+
+    const categoriesToDelete = categoriesFound.filter(category => !categoriesArray.includes(category.categoryId))
+
+    const newCategories = categoriesArray.filter(category => !categoriesFound.map(category => category.categoryId).includes(category))
+
+    if (newCategories.length > 0) {
+      const promiseCategories = newCategories.map(async categoryId => await CreateProductCategory({ categoryId, productId: req.params.productId }))
+      await Promise.all(promiseCategories)
+    }
+
+    if (categoriesToDelete.length > 0) {
+      const promiseDeletedCategories = categoriesToDelete.map(async category => {
+        await category.destroy()
+      })
+
+      await Promise.all(promiseDeletedCategories)
+    }
+
+    const images = resultImage.data
+
+    if (images.length > 0) {
+      await deletedImagesProduct(req.params.productId)
+      const promiseSaveImages = images.map(async image => await saveImageProduct({ imageId: image.imageId, productId: req.params.productId }))
+      await Promise.all(promiseSaveImages)
+    }
+
+    return res.sendStatus(204)
+  } catch (error) {
+    return handleError(error, res)
+  }
+}
+
 export async function deleteProduct (req: Request, res: Response) {
   try {
     const deletedCount = await DeleteById(req.params.productId)

@@ -1,5 +1,6 @@
 import { DEFAULT_PAGINATION_WITH_SEARCH } from '@/constanst'
 import Brand from '@/models/Brand'
+import Category from '@/models/Category'
 import Gender from '@/models/Gender'
 import Image from '@/models/Image'
 import Product from '@/models/Product'
@@ -31,7 +32,8 @@ export async function GetAll ({
         model: ProductImage,
         attributes: { exclude: excludeTimeStamps },
         include: [{ model: Image, attributes: { exclude: excludeTimeStamps } }]
-      }
+      },
+      { model: Category, attributes: { exclude: [...excludeTimeStamps] } }
     ],
     where: {
       name: {
@@ -54,7 +56,8 @@ export async function GetByid (productId?: string) {
         model: ProductImage,
         attributes: { exclude: excludeTimeStamps },
         include: [{ model: Image, attributes: { exclude: excludeTimeStamps } }]
-      }
+      },
+      { model: Category, attributes: { exclude: [...excludeTimeStamps] } }
     ]
   })
 
@@ -108,4 +111,43 @@ export async function Create (newProduct: ProductCreateDTO) {
   const product = await Product.create({ ...restOfProduct, genderId })
   await product.save()
   return product
+}
+
+interface UpdateProduct {
+  productId?: string
+  newProduct: Partial<ProductCreateDTO>
+}
+
+export async function UpdateById ({ newProduct, productId }: UpdateProduct) {
+  const { gender, ...rest } = newProduct
+
+  if (gender === undefined) {
+    const [updatedCount] = await Product.update(rest, {
+      where: {
+        productId
+      }
+    })
+
+    return updatedCount
+  }
+
+  const genderFound = await Gender.findOne({
+    where: {
+      name: gender
+    }
+  })
+
+  if (genderFound === null) {
+    throw new UnexpectedError('Gender not found')
+  }
+
+  const genderId = genderFound.genderId ?? ''
+
+  const [updatedCount] = await Product.update({ ...rest, genderId }, {
+    where: {
+      productId
+    }
+  })
+
+  return updatedCount
 }
