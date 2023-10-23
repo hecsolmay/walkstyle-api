@@ -64,6 +64,30 @@ export async function Create (input: CategoryDTO) {
   return category
 }
 
+interface UpdateCategory {
+  categoryId?: string
+  newCategory: Partial<CategoryDTO>
+}
+
+export async function UpdateById ({ categoryId, newCategory }: UpdateCategory) {
+  const imageId = newCategory?.image?.imageId
+  const bannerId = newCategory?.banner?.imageId
+
+  const updateCategory = {
+    name: newCategory?.name,
+    bannerId,
+    imageId
+  }
+
+  const [updatedCount] = await Category.update(updateCategory, {
+    where: {
+      categoryId
+    }
+  })
+
+  return updatedCount
+}
+
 export async function DeleteById (id: string) {
   const deletedCount = await Category.destroy({
     where: {

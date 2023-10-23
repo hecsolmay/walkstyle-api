@@ -1,8 +1,8 @@
-import { validateBrand } from '@/schemas/brand'
+import { partialBrand, validateBrand } from '@/schemas/brand'
 import { getInfoPagination, validatePagination } from '@/schemas/pagination'
 import { validateSearch } from '@/schemas/query'
-import { Create, DeleteById, GetAll, GetById, RestoreById } from '@/service/brand'
-import { handleError } from '@/utils/errors'
+import { Create, DeleteById, GetAll, GetById, RestoreById, UpdateById } from '@/service/brand'
+import { ZodValidationError, handleError } from '@/utils/errors'
 
 import { mapBrandsAttributes } from '@/utils/mappers'
 import { type Request, type Response } from 'express'
@@ -55,13 +55,12 @@ export async function getBrandById (req: Request, res: Response) {
     return handleError(error, res)
   }
 }
-export async function createbrands (req: Request, res: Response) {
+export async function createBrand (req: Request, res: Response) {
   try {
-    console.log({ files: req.files })
     const result = validateBrand(req.body)
 
     if (!result.success) {
-      return res.status(400).json({ message: 'Bad Request', errors: result.error })
+      throw new ZodValidationError(result.error)
     }
 
     const brandCreated = await Create(result.data)
@@ -70,6 +69,26 @@ export async function createbrands (req: Request, res: Response) {
   } catch (error) {
     console.error(error)
     return res.status(500).json({ message: 'Error al crear la marca' })
+  }
+}
+
+export async function updateBrand (req: Request, res: Response) {
+  try {
+    const result = partialBrand(req.body)
+
+    if (!result.success) {
+      throw new ZodValidationError(result.error)
+    }
+
+    const updatedCount = await UpdateById({ brandId: req.params.brandId, newBanner: result.data })
+
+    if (updatedCount === 0) {
+      return res.status(404).json({ message: 'Brand not found' })
+    }
+
+    return res.sendStatus(204)
+  } catch (error) {
+    return handleError(error, res)
   }
 }
 

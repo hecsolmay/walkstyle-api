@@ -52,6 +52,30 @@ export async function Create (input: BrandDTO) {
   return brand
 }
 
+interface UpdateBrand {
+  brandId?: string
+  newBanner?: Partial<BrandDTO>
+}
+
+export async function UpdateById ({ brandId, newBanner }: UpdateBrand) {
+  const imageId = newBanner?.image?.imageId
+  const bannerId = newBanner?.banner?.imageId
+
+  const updateBanner = {
+    name: newBanner?.name,
+    bannerId,
+    imageId
+  }
+
+  const [updatedCount] = await Brand.update(updateBanner, {
+    where: {
+      brandId
+    }
+  })
+
+  return updatedCount
+}
+
 export async function DeleteById (id: string) {
   const deletedCount = await Brand.destroy({
     where: {

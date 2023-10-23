@@ -42,24 +42,25 @@ export async function uploadBannerAndImage (req: Request, res: Response, next: N
   try {
     const files = req.files as Record<string, Express.Multer.File[]> | undefined
 
-    if (files?.banner === undefined || files?.image === undefined) {
+    if (files?.banner === undefined && files?.image === undefined) {
       next()
       return
     }
 
-    const bannerFile = files.banner[0]
-    const imageFile = files.image[0]
+    if (files?.banner !== undefined) {
+      const bannerFile = files.banner[0]
+      const bannerBuffer = bannerFile.buffer
+      const banner = await uploadImageToCloudinaryAndSaveToDB(bannerBuffer, '/banners')
+      req.body.banner = banner.toJSON()
+    }
 
-    const imageBuffer = imageFile.buffer
-    const bannerBuffer = bannerFile.buffer
+    if (files?.image !== undefined) {
+      const imageFile = files.image[0]
+      const imageBuffer = imageFile.buffer
+      const image = await uploadImageToCloudinaryAndSaveToDB(imageBuffer, '/images')
+      req.body.image = image.toJSON()
+    }
 
-    const [image, banner] = await Promise.all([
-      uploadImageToCloudinaryAndSaveToDB(imageBuffer, '/images'),
-      uploadImageToCloudinaryAndSaveToDB(bannerBuffer, '/banners')
-    ])
-
-    req.body.image = image.toJSON()
-    req.body.banner = banner.toJSON()
     next()
     // eslint-disable-next-line no-useless-return
     return

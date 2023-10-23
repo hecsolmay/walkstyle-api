@@ -1,8 +1,8 @@
-import { validateCategory } from '@/schemas/category'
+import { partialCategory, validateCategory } from '@/schemas/category'
 import { getInfoPagination, validatePagination } from '@/schemas/pagination'
 import { validateSearch } from '@/schemas/query'
-import { Create, DeleteById, GetAll, GetById, RestoreById } from '@/service/category'
-import { handleError } from '@/utils/errors'
+import { Create, DeleteById, GetAll, GetById, RestoreById, UpdateById } from '@/service/category'
+import { ZodValidationError, handleError } from '@/utils/errors'
 import { mapCategoryAttributes } from '@/utils/mappers'
 import { type Request, type Response } from 'express'
 
@@ -62,7 +62,7 @@ export async function createCategory (req: Request, res: Response) {
     const result = validateCategory(req.body)
 
     if (!result.success) {
-      return res.status(400).json({ message: 'Bad Request', errors: result.error })
+      throw new ZodValidationError(result.error)
     }
 
     const categoryCreated = await Create(result.data)
@@ -76,6 +76,26 @@ export async function createCategory (req: Request, res: Response) {
     const mappedCategory = mapCategoryAttributes(category.toJSON())
 
     return res.status(201).json({ message: 'Category created', category: mappedCategory })
+  } catch (error) {
+    return handleError(error, res)
+  }
+}
+
+export async function updateCategory (req: Request, res: Response) {
+  try {
+    const result = partialCategory(req.body)
+
+    if (!result.success) {
+      throw new ZodValidationError(result.error)
+    }
+
+    const updatedCount = await UpdateById({ categoryId: req.params.categoryId, newCategory: result.data })
+
+    if (updatedCount === 0) {
+      return res.status(404).json({ message: 'Category not found' })
+    }
+
+    return res.sendStatus(204)
   } catch (error) {
     return handleError(error, res)
   }
