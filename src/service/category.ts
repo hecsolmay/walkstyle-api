@@ -30,6 +30,18 @@ export async function GetAll ({
   return { categories, count }
 }
 
+export async function GetAllIn (categoriesIds: string[]) {
+  const categories = await Category.findAll({
+    where: {
+      categoryId: {
+        [Op.in]: categoriesIds
+      }
+    }
+  })
+
+  return categories
+}
+
 export async function GetById (id?: string) {
   const category = await Category.findByPk(id, {
     include: [
