@@ -5,6 +5,7 @@ import brandRoutes from '@/routes/brand.routes'
 import categoryRoutes from '@/routes/category.routes'
 import productRoutes from '@/routes/product.routes'
 import sizeRouters from '@/routes/size.routes'
+import usersRoutes from '@/routes/users.routers'
 import cors from 'cors'
 import express from 'express'
 import morgan from 'morgan'
@@ -38,6 +39,7 @@ app.use('/api/brands', brandRoutes)
 app.use('/api/categories', categoryRoutes)
 app.use('/api/products', productRoutes)
 app.use('/api/size', sizeRouters)
+app.use('/api/users', usersRoutes)
 
 app.get('*', (_req, res) => {
   res.status(404).sendFile(path.join(__dirname, '../public/not-found.html'))
