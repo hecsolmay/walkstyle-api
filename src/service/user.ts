@@ -1,21 +1,43 @@
-import { ROLE as RoleEnum } from '@/constanst/enums'
+import { DEFAULT_PAGINATION_WITH_SEARCH } from '@/constanst'
+import { ROLE, ROLE as RoleEnum } from '@/constanst/enums'
 import Role from '@/models/Role'
 import User from '@/models/User'
 import { type UserCreateDTO } from '@/types/createDto'
+import { type QueryWithDeleted } from '@/types/queries'
+import { Op } from 'sequelize'
 
-export async function GetAll () {
-  const users = await User.findAll()
-  return users
-}
+export async function GetAll ({
+  limit = 10,
+  offset = 0,
+  q = '',
+  getDeleted
+}: QueryWithDeleted = DEFAULT_PAGINATION_WITH_SEARCH) {
+  const deleted = Boolean(getDeleted)
 
-export async function GetById (id: string) {
-  const user = await User.findOne({
+  const { count, rows: users } = await User.findAndCountAll({
     include: {
       model: Role,
       attributes: ['name']
     },
+    limit,
+    offset,
     where: {
-      userId: id
+      [Op.or]: [
+        { fullname: { [Op.like]: `%${q}%` } },
+        { email: { [Op.like]: `%${q}%` } }
+      ]
+    },
+    paranoid: !deleted
+  })
+
+  return { count, users }
+}
+
+export async function GetById (userId?: string) {
+  const user = await User.findByPk(userId, {
+    include: {
+      model: Role,
+      attributes: ['name']
     }
   })
   return user
@@ -33,7 +55,7 @@ export async function Create (user: UserCreateDTO) {
   return savedUser
 }
 interface Params {
-  email: string // Declarar una propiedad 'email' en el objeto Params
+  email: string
 }
 
 export async function GetOne (params: Params) {
@@ -48,5 +70,54 @@ export async function GetOne (params: Params) {
       email
     }
   })
+  return user
+}
+
+interface UpdateParams {
+  userId?: string
+  newUser: Partial<UserCreateDTO>
+}
+
+export async function UpdateById ({ userId, newUser }: UpdateParams) {
+  const { role = ROLE.USER, ...rest } = newUser
+
+  const newRole = await Role.findOne({
+    where: {
+      name: role
+    }
+  })
+
+  const updateUser = { ...rest, roleId: newRole?.roleId ?? '' }
+
+  const [updatedCount] = await User.update(updateUser, {
+    where: {
+      userId
+    }
+  })
+
+  return updatedCount
+}
+
+export async function DeleteById (userId?: string) {
+  const deletedCount = await User.destroy({
+    where: {
+      userId
+    }
+  })
+
+  return deletedCount
+}
+
+export async function RestoreById (userId?: string) {
+  const user = await User.findByPk(userId, {
+    paranoid: false
+  })
+
+  if (user === null) {
+    return null
+  }
+
+  await user.restore()
+
   return user
 }
