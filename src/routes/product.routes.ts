@@ -13,6 +13,6 @@ router.get('/:productId', productCtrl.getProductById)
 router.get('/:productId/sizes', productCtrl.getProductSize)
 router.put('/:productId', [handleMultipleFiles, validatePartialProduct, uploadMultipleImages], productCtrl.updateProduct)
 router.delete('/:productId', productCtrl.deleteProduct)
-router.patch('/:productId', productCtrl.restoreProduct)
+router.patch('/restore/:productId', productCtrl.restoreProduct)
 
 export default router
