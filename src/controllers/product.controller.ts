@@ -36,7 +36,9 @@ export async function getProductsDeleted (req: Request, res: Response) {
 
     const info = getInfoPagination({ ...pagination, count })
 
-    return res.status(200).json({ info, products })
+    const mappedProducts = products.map(product => mapProductAttributes(product.toJSON(), true))
+
+    return res.status(200).json({ info, products: mappedProducts })
   } catch (error) {
     return handleError(error, res)
   }
