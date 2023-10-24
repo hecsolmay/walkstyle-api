@@ -8,6 +8,17 @@ export async function CreateSize (newSize: SizeCreateDTO) {
   return size
 }
 
+export async function GetProductSizes (productId?: string, getDeleted = false) {
+  const sizes = await Size.findAll({
+    where: {
+      productId
+    },
+    paranoid: !getDeleted
+  })
+
+  return sizes
+}
+
 interface SearchSize {
   productId: string
   size: number

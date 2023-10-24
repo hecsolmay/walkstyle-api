@@ -38,7 +38,7 @@ app.use('/api/auth', authRoutes)
 app.use('/api/brands', brandRoutes)
 app.use('/api/categories', categoryRoutes)
 app.use('/api/products', productRoutes)
-app.use('/api/size', sizeRouters)
+app.use('/api/sizes', sizeRouters)
 app.use('/api/users', usersRoutes)
 
 app.get('*', (_req, res) => {

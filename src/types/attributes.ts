@@ -44,7 +44,7 @@ export interface BrandAttributes extends BannerAndImage, TimeStamps {
   name: string
 }
 
-export interface SizeAttributes {
+export interface SizeAttributes extends TimeStamps {
   sizeId?: string
   extraPrice: number
   size: number

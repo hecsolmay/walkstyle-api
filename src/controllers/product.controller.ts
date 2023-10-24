@@ -5,9 +5,9 @@ import { GetAllIn } from '@/service/category'
 import { CreateProductCategory, GetAllProductCategories } from '@/service/category-products'
 import { deletedImagesProduct, saveImageProduct } from '@/service/image'
 import { Create, DeleteById, GetAll, GetByid, RestoreById, UpdateById } from '@/service/products'
-import { CreateSize } from '@/service/size'
+import { CreateSize, GetProductSizes } from '@/service/size'
 import { ZodValidationError, handleError } from '@/utils/errors'
-import { mapProductAttributes } from '@/utils/mappers'
+import { mapProductAttributes, mapSizeAttributes } from '@/utils/mappers'
 import { type Request, type Response } from 'express'
 
 export async function getProducts (req: Request, res: Response) {
@@ -53,6 +53,24 @@ export async function getProductById (req: Request, res: Response) {
     }
 
     return res.status(200).json({ product: mapProductAttributes(product.toJSON()) })
+  } catch (error) {
+    return handleError(error, res)
+  }
+}
+
+export async function getProductSize (req: Request, res: Response) {
+  try {
+    const product = await GetByid(req.params.productId)
+
+    if (product === null) {
+      return res.status(404).json({ message: 'Product not found' })
+    }
+
+    const sizes = await GetProductSizes(req.params.productId, true)
+
+    const mappedSizes = sizes.map(size => mapSizeAttributes(size.toJSON(), true))
+
+    return res.status(200).json({ sizes: mappedSizes })
   } catch (error) {
     return handleError(error, res)
   }
