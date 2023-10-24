@@ -21,7 +21,7 @@ export async function GetAll ({
 }: QueryWithDeleted = DEFAULT_PAGINATION_WITH_SEARCH) {
   const deleted = Boolean(getDeleted)
 
-  const { count, rows: products } = await Product.findAndCountAll({
+  const products = await Product.findAll({
     offset,
     limit,
     include: [
@@ -40,6 +40,10 @@ export async function GetAll ({
         [Op.like]: `%${q}%`
       }
     },
+    paranoid: !deleted
+  })
+
+  const count = await Product.count({
     paranoid: !deleted
   })
 
