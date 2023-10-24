@@ -18,7 +18,7 @@ export async function getBrands (req: Request, res: Response) {
 
     const info = getInfoPagination({ ...pagination, count })
 
-    return res.status(200).json({ info, brand: mappedBrands })
+    return res.status(200).json({ info, brands: mappedBrands })
   } catch (error) {
     return handleError(error, res)
   }
@@ -34,7 +34,7 @@ export async function getbrandsDeleted (req: Request, res: Response) {
 
     const info = getInfoPagination({ ...pagination, count })
 
-    return res.status(200).json({ info, brand: mappedBrands })
+    return res.status(200).json({ info, brands: mappedBrands })
   } catch (error) {
     return handleError(error, res)
   }
