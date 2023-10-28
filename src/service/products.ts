@@ -25,13 +25,14 @@ export async function GetAll ({
     offset,
     limit,
     include: [
-      { model: Gender, attributes: { exclude: excludeTimeStamps } },
-      { model: Brand, attributes: { exclude: excludeTimeStamps } },
-      { model: Size, attributes: { exclude: [...excludeTimeStamps, 'productId'] } },
+      { model: Gender, attributes: { exclude: excludeTimeStamps }, paranoid: false },
+      { model: Brand, attributes: { exclude: excludeTimeStamps }, paranoid: false },
+      { model: Size, attributes: { exclude: [...excludeTimeStamps, 'productId'] }, paranoid: false },
       {
         model: ProductImage,
         attributes: { exclude: excludeTimeStamps },
-        include: [{ model: Image, attributes: { exclude: excludeTimeStamps } }]
+        include: [{ model: Image, attributes: { exclude: excludeTimeStamps } }],
+        paranoid: false
       },
       { model: Category, attributes: { exclude: [...excludeTimeStamps] } }
     ],
