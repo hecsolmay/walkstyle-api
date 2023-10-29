@@ -1,5 +1,5 @@
 import { ROLE, STATUS } from '@/constanst/enums'
-import { type ProductAttributes, type BrandAttributes, type CategoryAttributes, type ImageAttributes, type UserAttributes, type SizeAttributes } from '@/types/attributes'
+import { type ProductAttributes, type BrandAttributes, type CategoryAttributes, type ImageAttributes, type UserAttributes, type SizeAttributes, type SaleAttributes } from '@/types/attributes'
 
 export function mapImageAtributes (image?: ImageAttributes) {
   if (image === undefined) {
@@ -134,4 +134,67 @@ export function mapSizeAttributes (size: SizeAttributes, timeStamps = false) {
   }
 
   return restOfSize
+}
+
+export function mapSaleProductAttributes (product: ProductAttributes, timeStamps = false) {
+  const { createdAt, deletedAt, updatedAt, brandId, genderId, product_images: productImages, ...restOfProduct } = product
+
+  const images = productImages?.map(productImage => mapImageAtributes(productImage.image)) ?? []
+
+  if (timeStamps) {
+    const status = getStatus(Boolean(deletedAt))
+
+    return {
+      ...restOfProduct,
+      images,
+      status,
+      createdAt,
+      updatedAt
+    }
+  }
+
+  return {
+    ...restOfProduct,
+    images
+  }
+}
+
+export function mapSaleAttributes (sale: SaleAttributes) {
+  const { totalPaid, sizes = [], user, createdAt, updatedAt, saleId } = sale
+
+  const mappedProducts = sizes.map(size => {
+    const { sale_products: saleProduct, size: saleSize, product } = size
+
+    let productResponse = {}
+
+    if (product !== undefined) {
+      productResponse = mapSaleProductAttributes(product)
+    }
+
+    return {
+      saleProductId: saleProduct.saleProductId,
+      originalPrice: saleProduct.originalPrice,
+      extraPrice: saleProduct.extraPrice,
+      quantity: saleProduct.quantity,
+      total: saleProduct.total,
+      size: saleSize,
+      product: productResponse
+    }
+  })
+
+  const response = {
+    saleId,
+    totalPaid,
+    createdAt,
+    updatedAt,
+    user: {},
+    products: mappedProducts
+  }
+
+  if (user !== undefined) {
+    const { rememberToken, ...restOfUser } = mapUserAttributes(user)
+    response.user = restOfUser
+  }
+
+  return response
 }

@@ -1,5 +1,5 @@
 import { DEFAULT_PAGINATION_WITH_SEARCH } from '@/constanst'
-import { ROLE, ROLE as RoleEnum } from '@/constanst/enums'
+import { ROLE as RoleEnum } from '@/constanst/enums'
 import Role from '@/models/Role'
 import User from '@/models/User'
 import { type UserCreateDTO } from '@/types/createDto'

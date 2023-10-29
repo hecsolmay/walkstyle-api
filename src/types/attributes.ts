@@ -50,6 +50,7 @@ export interface SizeAttributes extends TimeStamps {
   size: number
   stock: number
   productId: string
+  product?: ProductAttributes
 }
 
 export interface CategoryAttributes extends BannerAndImage, TimeStamps {
@@ -79,10 +80,16 @@ export interface ProductImageAttributes extends TimeStamps {
   image?: ImageAttributes
 }
 
-export interface SaleAttributes {
+export interface SaleAttributes extends TimeStamps {
   saleId?: string
   userId: string
   totalPaid: number
+  user?: UserAttributes
+  sizes?: SaleSize[]
+}
+
+interface SaleSize extends SizeAttributes {
+  sale_products: SaleProductAttributes
 }
 
 export interface SaleProductAttributes extends TimeStamps {

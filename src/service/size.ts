@@ -1,3 +1,4 @@
+import Product from '@/models/Product'
 import Size from '@/models/Size'
 import { type SizeCreateDTO } from '@/types/createDto'
 import { Op } from 'sequelize'
@@ -41,8 +42,14 @@ export async function GetOneSize (search: SearchSize) {
   return size
 }
 
-export async function GetById (sizeId?: string) {
-  const size = await Size.findByPk(sizeId)
+export async function GetById (sizeId?: string, getDeleted = false) {
+  const deleted = Boolean(getDeleted)
+  const size = await Size.findByPk(sizeId, {
+    include: [
+      { model: Product }
+    ],
+    paranoid: !deleted
+  })
   return size
 }
 

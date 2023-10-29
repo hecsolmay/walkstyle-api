@@ -1,7 +1,7 @@
 import { sequelize } from '@/database'
+import User from '@/models/User'
 import { type SaleModel } from '@/types/models'
 import { DataTypes, type ModelStatic } from 'sequelize'
-import User from './User'
 
 const Sale: ModelStatic<SaleModel> = sequelize.define<SaleModel>('sales', {
   saleId: {
