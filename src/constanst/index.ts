@@ -12,3 +12,6 @@ export const DEFAULT_PAGINATION_WITH_SEARCH: PaginationWithSearch = {
   q: '',
   page: 1
 }
+export const DEFAULT_UNAUTHORIZED_ERROR = 'You are not authorized'
+export const DEFAULT_FORBIDDEN_ERROR = 'You are not allowed to be here'
+export const DEFAULT_NOTFOUND_ERROR = 'Resource not found'

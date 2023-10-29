@@ -1,4 +1,6 @@
 import { type searchSchema } from '@/schemas/query'
+import { type UserAttributes } from '@/types/attributes'
+import { type Request } from 'express'
 import { type z } from 'zod'
 
 export interface PaginationQuery {
@@ -23,4 +25,8 @@ export type SearchParam = z.infer<typeof searchSchema>
 export interface PaginationWithSearch extends PaginationQuery, SearchParam {}
 export interface QueryWithDeleted extends PaginationWithSearch {
   getDeleted?: boolean
+}
+
+export interface RequestWithUser extends Request {
+  user: UserAttributes
 }
