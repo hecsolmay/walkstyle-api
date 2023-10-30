@@ -11,6 +11,9 @@ export async function CreateSize (newSize: SizeCreateDTO) {
 
 export async function GetProductSizes (productId?: string, getDeleted = false) {
   const sizes = await Size.findAll({
+    order: [
+      ['size', 'ASC']
+    ],
     where: {
       productId
     },
