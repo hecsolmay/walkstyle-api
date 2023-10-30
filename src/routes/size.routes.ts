@@ -6,6 +6,6 @@ const router = Router()
 router.post('/', sizeCtrl.createSize)
 router.put('/:sizeId', sizeCtrl.updateSizeById)
 router.delete('/:sizeId', sizeCtrl.deleteSizeById)
-router.patch('/:sizeId', sizeCtrl.restoreSizeById)
+router.patch('/restore/:sizeId', sizeCtrl.restoreSizeById)
 
 export default router
