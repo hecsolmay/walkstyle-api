@@ -3,10 +3,10 @@ import { type OrderItem } from 'sequelize'
 
 const orderProducts: Record<OrderProductsQuery, OrderItem> = {
   recents: ['createdAt', 'DESC'],
-  'name-asc': ['name', 'DESC'],
-  'name-desc': ['name', 'ASC'],
-  'price-asc': ['price', 'DESC'],
-  'price-desc': ['price', 'ASC']
+  'name-asc': ['name', 'ASC'],
+  'name-desc': ['name', 'DESC'],
+  'price-asc': ['price', 'ASC'],
+  'price-desc': ['price', 'DESC']
 }
 
 interface GetOrderQuery {
