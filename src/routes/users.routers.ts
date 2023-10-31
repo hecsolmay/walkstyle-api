@@ -13,6 +13,7 @@ router.patch('/restore/:userId', userCtrl.restoreUser)
 router.patch('/:userId/role', userCtrl.changeRole)
 router.patch('/:userId/restore-password', userCtrl.restorePassword)
 router.put('/:userId', userCtrl.updateUserById)
-router.patch('/:userId/profile-image', [handleOneFile, uploadOneImage])
+router.post('/:userId/profile-image', [handleOneFile, uploadOneImage], userCtrl.changeProfile)
+router.put('/:userId/profile-image', [handleOneFile, uploadOneImage], userCtrl.changeProfile)
 
 export default router

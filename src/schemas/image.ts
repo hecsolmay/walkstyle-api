@@ -10,3 +10,7 @@ export const imageSchema = z.object({
 export function validateImage (input: any) {
   return imageSchema.safeParse(input)
 }
+
+export function partialImage (input: any) {
+  return imageSchema.partial().safeParse(input)
+}

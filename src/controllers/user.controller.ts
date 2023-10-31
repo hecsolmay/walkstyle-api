@@ -1,4 +1,4 @@
-import { validateImage } from '@/schemas/image'
+import { partialImage } from '@/schemas/image'
 import { getInfoPagination, validatePagination } from '@/schemas/pagination'
 import { validateSearch } from '@/schemas/query'
 import { validateRole } from '@/schemas/role'
@@ -167,21 +167,24 @@ export async function restorePassword (req: Request, res: Response) {
 
 export async function changeProfile (req: Request, res: Response) {
   try {
-    const result = validateImage(req.body.image)
+    const result = partialImage(req.body.image)
 
     if (!result.success) {
       throw new ZodValidationError(result.error)
     }
 
     const image = result.data
-    const { userId = '' } = req.params
-    const updatedCount = await UpdateById({ userId, newUser: { profileUrl: image.main } })
+
+    const userId = req.params.userId ?? ''
+    const newProfileImage = image?.main === undefined ? null : image.main
+
+    const updatedCount = await UpdateById({ userId, newUser: { profileUrl: newProfileImage } })
 
     if (updatedCount === 0) {
       throw new NotFoundError('User not found')
     }
 
-    return res.json({ profileUrl: image.main })
+    return res.json({ profileUrl: newProfileImage })
   } catch (error) {
     return handleError(error, res)
   }
