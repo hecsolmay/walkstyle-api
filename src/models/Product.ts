@@ -18,7 +18,7 @@ const Product: ModelStatic<ProductModel> = sequelize.define<ProductModel>(
       allowNull: false
     },
     details: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.TEXT,
       allowNull: false
     },
     price: {
