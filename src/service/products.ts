@@ -7,8 +7,9 @@ import Product from '@/models/Product'
 import ProductImage from '@/models/Product-Image'
 import Size from '@/models/Size'
 import { type ProductCreateDTO } from '@/types/createDto'
-import { type QueryWithDeleted } from '@/types/queries'
+import { type ProductPaginationWithSearch, type ProductQueryWithDeleted } from '@/types/queries'
 import { UnexpectedError } from '@/utils/errors'
+import { getOrderProducts } from '@/utils/sort-query'
 import { Op } from 'sequelize'
 
 const excludeTimeStamps = ['createdAt', 'updatedAt', 'deletedAt']
@@ -17,13 +18,15 @@ export async function GetAll ({
   limit = 10,
   offset = 0,
   q = '',
-  getDeleted
-}: QueryWithDeleted = DEFAULT_PAGINATION_WITH_SEARCH) {
+  getDeleted,
+  order
+}: ProductQueryWithDeleted = DEFAULT_PAGINATION_WITH_SEARCH) {
   const deleted = Boolean(getDeleted)
-
+  const orderSort = getOrderProducts({ order })
   const products = await Product.findAll({
     offset,
     limit,
+    order: [orderSort],
     include: [
       { model: Gender, attributes: { exclude: excludeTimeStamps }, paranoid: false },
       { model: Brand, attributes: { exclude: excludeTimeStamps }, paranoid: false },
@@ -45,6 +48,100 @@ export async function GetAll ({
   })
 
   const count = await Product.count({
+    paranoid: !deleted
+  })
+
+  return { products, count }
+}
+
+interface ProductsByBrand extends Omit<ProductPaginationWithSearch, 'page' | 'q'> {
+  brandId?: string
+  getDeleted?: boolean
+}
+
+export async function GetAllByBrand ({
+  limit = 10,
+  offset = 0,
+  getDeleted,
+  order,
+  brandId
+}: ProductsByBrand = DEFAULT_PAGINATION_WITH_SEARCH) {
+  const deleted = Boolean(getDeleted)
+  const orderSort = getOrderProducts({ order })
+
+  const products = await Product.findAll({
+    offset,
+    limit,
+    order: [orderSort],
+    include: [
+      { model: Gender, attributes: { exclude: excludeTimeStamps }, paranoid: false },
+      { model: Brand, attributes: { exclude: excludeTimeStamps }, paranoid: false },
+      { model: Size, attributes: { exclude: [...excludeTimeStamps, 'productId'] }, paranoid: false },
+      {
+        model: ProductImage,
+        attributes: { exclude: excludeTimeStamps },
+        include: [{ model: Image, attributes: { exclude: excludeTimeStamps } }],
+        paranoid: false
+      },
+      { model: Category, attributes: { exclude: [...excludeTimeStamps] } }
+    ],
+    where: {
+      brandId
+    },
+    paranoid: !deleted
+  })
+
+  const count = await Product.count({
+    where: {
+      brandId
+    },
+    paranoid: !deleted
+  })
+
+  return { products, count }
+}
+
+interface ProductsByGender extends Omit<ProductPaginationWithSearch, 'page' | 'q'> {
+  genderId?: string
+  getDeleted?: boolean
+}
+
+export async function GetAllProductsByGender ({
+  limit = 10,
+  offset = 0,
+  getDeleted,
+  order,
+  genderId
+}: ProductsByGender = DEFAULT_PAGINATION_WITH_SEARCH) {
+  const deleted = Boolean(getDeleted)
+  const orderSort = getOrderProducts({ order })
+
+  const products = await Product.findAll({
+    offset,
+    limit,
+    order: [orderSort],
+    include: [
+      { model: Gender, attributes: { exclude: excludeTimeStamps }, paranoid: false },
+      { model: Brand, attributes: { exclude: excludeTimeStamps }, paranoid: false },
+      { model: Size, attributes: { exclude: [...excludeTimeStamps, 'productId'] }, paranoid: false },
+      {
+        model: ProductImage,
+        attributes: { exclude: excludeTimeStamps },
+        include: [{ model: Image, attributes: { exclude: excludeTimeStamps } }],
+        paranoid: false
+      },
+      { model: Category, attributes: { exclude: [...excludeTimeStamps] } }
+    ],
+    where: {
+      genderId
+    },
+    paranoid: !deleted
+  })
+
+  const count = await Product.count({
+    where: {
+      genderId
+    },
     paranoid: !deleted
   })
 

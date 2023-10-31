@@ -20,7 +20,7 @@ export interface UserAttributes extends TimeStamps {
   fullname?: string
   email: string
   password?: string
-  profileUrl?: string
+  profileUrl?: string | null
   rememberToken?: string
   roleId: string
   role?: RoleAttributes
@@ -35,6 +35,7 @@ export interface ProductAttributes extends TimeStamps {
   brandId: string
   brand?: BrandAttributes
   gender?: GenderAttributes
+  sizes?: SizeAttributes[]
   product_images?: ProductImageAttributes[]
   categories?: CategoryAttributes[]
 }
@@ -70,7 +71,9 @@ export interface GenderAttributes extends TimeStamps {
 
 export interface CategoryProductsAttributes extends TimeStamps {
   categoryId: string
+  category?: CategoryAttributes
   productId: string
+  product?: ProductAttributes
 }
 
 export interface ProductImageAttributes extends TimeStamps {

@@ -2,9 +2,10 @@ import { partialBrand, validateBrand } from '@/schemas/brand'
 import { getInfoPagination, validatePagination } from '@/schemas/pagination'
 import { validateSearch } from '@/schemas/query'
 import { Create, DeleteById, GetAll, GetById, RestoreById, UpdateById } from '@/service/brand'
-import { ZodValidationError, handleError } from '@/utils/errors'
+import { GetAllByBrand } from '@/service/products'
+import { NotFoundError, ZodValidationError, handleError } from '@/utils/errors'
 
-import { mapBrandsAttributes } from '@/utils/mappers'
+import { mapBrandsAttributes, mapProductAttributes } from '@/utils/mappers'
 import { type Request, type Response } from 'express'
 
 export async function getBrands (req: Request, res: Response) {
@@ -45,12 +46,37 @@ export async function getBrandById (req: Request, res: Response) {
     const brand = await GetById(req.params.brandId)
 
     if (brand === null) {
-      return res.status(404).json({ message: 'Brand not found' })
+      throw new NotFoundError('Brand not found')
     }
 
     const mappedBrand = mapBrandsAttributes(brand.toJSON())
 
     return res.status(200).json({ category: mappedBrand })
+  } catch (error) {
+    return handleError(error, res)
+  }
+}
+
+export async function getProductsByBrand (req: Request, res: Response) {
+  try {
+    const brand = await GetById(req.params.brandId)
+    const order = req.query.order ?? '' as any
+
+    if (brand === null) {
+      throw new NotFoundError('Brand not found')
+    }
+
+    const pagination = validatePagination(req.query)
+
+    const { limit, offset } = pagination
+
+    const { count, products } = await GetAllByBrand({ order, limit, offset, brandId: brand.brandId })
+
+    const info = getInfoPagination({ ...pagination, count })
+
+    const mappedProducts = products.map((product) => mapProductAttributes(product.toJSON()))
+
+    return res.status(200).json({ info, products: mappedProducts })
   } catch (error) {
     return handleError(error, res)
   }

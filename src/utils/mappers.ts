@@ -1,5 +1,5 @@
 import { ROLE, STATUS } from '@/constanst/enums'
-import { type ProductAttributes, type BrandAttributes, type CategoryAttributes, type ImageAttributes, type UserAttributes, type SizeAttributes, type SaleAttributes } from '@/types/attributes'
+import { type ProductAttributes, type BrandAttributes, type CategoryAttributes, type ImageAttributes, type UserAttributes, type SizeAttributes, type SaleAttributes, type CategoryProductsAttributes } from '@/types/attributes'
 
 export function mapImageAtributes (image?: ImageAttributes) {
   if (image === undefined) {
@@ -90,12 +90,15 @@ export function mapBrandsAttributes (brand: BrandAttributes, timeStamps = false)
 }
 
 export function mapProductAttributes (product: ProductAttributes, timeStamps = false) {
-  const { createdAt, categories = [], deletedAt, updatedAt, brandId, genderId, product_images: productImages, ...restOfProduct } = product
+  const { createdAt, sizes = [], categories = [], deletedAt, updatedAt, brandId, genderId, product_images: productImages, ...restOfProduct } = product
 
   const mappedCategories = categories.map(category => ({
     categoryId: category.categoryId,
     name: category.name
   }))
+
+  const sortedSizes = [...sizes].sort((a, b) => a.size - b.size)
+  const mappedSizes = sortedSizes.map(size => mapSizeAttributes(size))
 
   const images = productImages?.map(productImage => mapImageAtributes(productImage.image)) ?? []
 
@@ -104,6 +107,7 @@ export function mapProductAttributes (product: ProductAttributes, timeStamps = f
 
     return {
       ...restOfProduct,
+      sizes: mappedSizes,
       categories: mappedCategories,
       images,
       status,
@@ -114,6 +118,7 @@ export function mapProductAttributes (product: ProductAttributes, timeStamps = f
 
   return {
     ...restOfProduct,
+    sizes: mappedSizes,
     categories: mappedCategories,
     images
   }
@@ -197,4 +202,16 @@ export function mapSaleAttributes (sale: SaleAttributes) {
   }
 
   return response
+}
+
+export function mapCategoryProductAttributes (categoryProduct: CategoryProductsAttributes) {
+  const { product } = categoryProduct
+
+  if (product !== undefined) {
+    return {
+      product: mapProductAttributes(product)
+    }
+  }
+
+  return categoryProduct
 }

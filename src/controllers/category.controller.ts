@@ -2,8 +2,9 @@ import { partialCategory, validateCategory } from '@/schemas/category'
 import { getInfoPagination, validatePagination } from '@/schemas/pagination'
 import { validateSearch } from '@/schemas/query'
 import { Create, DeleteById, GetAll, GetById, RestoreById, UpdateById } from '@/service/category'
+import { getAllProductsByCategory } from '@/service/category-products'
 import { ZodValidationError, handleError } from '@/utils/errors'
-import { mapCategoryAttributes } from '@/utils/mappers'
+import { mapCategoryAttributes, mapCategoryProductAttributes } from '@/utils/mappers'
 import { type Request, type Response } from 'express'
 
 export async function getCategories (req: Request, res: Response) {
@@ -51,6 +52,29 @@ export async function getCategoryById (req: Request, res: Response) {
     const mappedCategory = mapCategoryAttributes(category.toJSON())
 
     return res.status(200).json({ category: mappedCategory })
+  } catch (error) {
+    return handleError(error, res)
+  }
+}
+
+export async function getProductsByCategory (req: Request, res: Response) {
+  try {
+    const category = await GetById(req.params.categoryId)
+    const pagination = validatePagination(req.query)
+    const order = req.query.order ?? '' as any
+
+    if (category === null) {
+      return res.status(404).json({ message: 'Category not found' })
+    }
+
+    const { limit, offset } = pagination
+    const { products, count } = await getAllProductsByCategory({ order, limit, offset, categoryId: category.categoryId })
+
+    // const mappedCategory = mapCategoryAttributes(category.toJSON())
+    const info = getInfoPagination({ ...pagination, count })
+    const mappedProducts = products.map(product => mapCategoryProductAttributes(product.toJSON()))
+
+    return res.status(200).json({ info, products: mappedProducts })
   } catch (error) {
     return handleError(error, res)
   }

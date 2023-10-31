@@ -3,6 +3,7 @@ import { ApiEndpoints } from '@/constanst'
 import authRoutes from '@/routes/auth.routes'
 import brandRoutes from '@/routes/brand.routes'
 import categoryRoutes from '@/routes/category.routes'
+import gendersRoutes from '@/routes/gender.routes'
 import productRoutes from '@/routes/product.routes'
 import salesRoutes from '@/routes/sales.routes'
 import sizeRouters from '@/routes/size.routes'
@@ -38,6 +39,7 @@ app.get('/api', (_req, res) => {
 app.use('/api/auth', authRoutes)
 app.use('/api/brands', brandRoutes)
 app.use('/api/categories', categoryRoutes)
+app.use('/api/genders', gendersRoutes)
 app.use('/api/products', productRoutes)
 app.use('/api/sales', salesRoutes)
 app.use('/api/sizes', sizeRouters)

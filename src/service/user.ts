@@ -74,9 +74,13 @@ export async function GetOne (params: Params) {
   return user
 }
 
+interface newUserUpdate extends UserCreateDTO {
+  profileUrl: string | null
+}
+
 interface UpdateParams {
   userId?: string
-  newUser: Partial<UserCreateDTO>
+  newUser: Partial<newUserUpdate>
 }
 
 export async function UpdateById ({ userId, newUser }: UpdateParams) {

@@ -1,10 +1,10 @@
+import { validateImage } from '@/schemas/image'
 import { getInfoPagination, validatePagination } from '@/schemas/pagination'
 import { validateSearch } from '@/schemas/query'
 import { validateRole } from '@/schemas/role'
 import { partialUser, validateChangePassword } from '@/schemas/user'
-import { RestoreById, DeleteById, GetAll, GetById, GetOne, UpdateById } from '@/service/user'
-import { ZodValidationError, handleError } from '@/utils/errors'
-
+import { DeleteById, GetAll, GetById, GetOne, RestoreById, UpdateById } from '@/service/user'
+import { NotFoundError, ZodValidationError, handleError } from '@/utils/errors'
 import { mapUserAttributes } from '@/utils/mappers'
 import { type Request, type Response } from 'express'
 
@@ -160,6 +160,28 @@ export async function restorePassword (req: Request, res: Response) {
     await user.update({ password: newPassword })
 
     return res.sendStatus(204)
+  } catch (error) {
+    return handleError(error, res)
+  }
+}
+
+export async function changeProfile (req: Request, res: Response) {
+  try {
+    const result = validateImage(req.body.image)
+
+    if (!result.success) {
+      throw new ZodValidationError(result.error)
+    }
+
+    const image = result.data
+    const { userId = '' } = req.params
+    const updatedCount = await UpdateById({ userId, newUser: { profileUrl: image.main } })
+
+    if (updatedCount === 0) {
+      throw new NotFoundError('User not found')
+    }
+
+    return res.json({ profileUrl: image.main })
   } catch (error) {
     return handleError(error, res)
   }

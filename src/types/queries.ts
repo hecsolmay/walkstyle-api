@@ -30,3 +30,11 @@ export interface QueryWithDeleted extends PaginationWithSearch {
 export interface RequestWithUser extends Request {
   user: UserAttributes
 }
+
+export type OrderProductsQuery = 'recents' | 'price-asc' | 'price-desc' | 'name-asc' | 'name-desc'
+export interface ProductPaginationWithSearch extends PaginationWithSearch {
+  order?: OrderProductsQuery
+}
+export interface ProductQueryWithDeleted extends ProductPaginationWithSearch {
+  getDeleted?: boolean
+}

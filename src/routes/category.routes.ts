@@ -10,6 +10,7 @@ router.get('/all', categoriesCtrl.getCategoriesDeleted)
 router.post('/', [handleBannerAndImage, uploadBannerAndImage], categoriesCtrl.createCategory)
 router.put('/:categoryId', [handleBannerAndImage, uploadBannerAndImage], categoriesCtrl.updateCategory)
 router.get('/:categoryId', categoriesCtrl.getCategoryById)
+router.get('/:categoryId/products', categoriesCtrl.getProductsByCategory)
 router.delete('/:categoryId', categoriesCtrl.deleteCategory)
 router.patch('/restore/:categoryId', categoriesCtrl.restoreCategory)
 

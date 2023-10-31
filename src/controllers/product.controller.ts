@@ -13,9 +13,10 @@ import { type Request, type Response } from 'express'
 export async function getProducts (req: Request, res: Response) {
   try {
     const pagination = validatePagination(req.query)
+    const order = req.query.order ?? '' as any
     const query = validateSearch(req.query)
 
-    const { count, products } = await GetAll({ ...pagination, ...query })
+    const { count, products } = await GetAll({ ...pagination, ...query, order })
 
     const mappedProducts = products.map(product => mapProductAttributes(product.toJSON()))
 
@@ -30,9 +31,10 @@ export async function getProducts (req: Request, res: Response) {
 export async function getProductsDeleted (req: Request, res: Response) {
   try {
     const pagination = validatePagination(req.query)
+    const order = req.query.order ?? '' as any
     const query = validateSearch(req.query)
 
-    const { count, products } = await GetAll({ ...pagination, ...query, getDeleted: true })
+    const { count, products } = await GetAll({ ...pagination, ...query, order, getDeleted: true })
 
     const info = getInfoPagination({ ...pagination, count })
 

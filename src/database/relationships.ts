@@ -20,7 +20,9 @@ Brand.belongsTo(Image, { as: 'image', foreignKey: 'imageId' })
 // PRODUCT-CATEGORY
 
 Product.belongsToMany(Category, { through: ProductCategory, foreignKey: 'productId' })
+ProductCategory.hasOne(Product, { foreignKey: 'productId' })
 Category.belongsToMany(Product, { through: ProductCategory, foreignKey: 'categoryId' })
+ProductCategory.hasOne(Category, { foreignKey: 'categoryId' })
 Category.belongsTo(Image, { as: 'banner', foreignKey: 'bannerId' })
 Category.belongsTo(Image, { as: 'image', foreignKey: 'imageId' })
 
