@@ -6,3 +6,7 @@ export const imageSchema = z.object({
   thumbnail: z.string().url(),
   preview: z.string().url()
 })
+
+export function validateImage (input: any) {
+  return imageSchema.safeParse(input)
+}

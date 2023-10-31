@@ -9,10 +9,10 @@ cloudinary.config({
 
 // Opciones de transformación
 const transformationOptions: UploadApiOptions = {
-  width: 800,
-  height: 800,
+  width: 1000,
+  height: 1000,
   crop: 'fill',
-  format: 'jpg'
+  format: 'png'
 }
 
 interface Props {

@@ -27,12 +27,10 @@ export async function uploadOneImage (req: Request, res: Response, next: NextFun
     }
 
     const imageBuffer = imageFile.buffer
-    const image = await uploadImageToCloudinaryAndSaveToDB(imageBuffer, '/products')
+    const image = await uploadImageToCloudinaryAndSaveToDB(imageBuffer, '/image')
 
     req.body.image = image.toJSON()
     next()
-    // eslint-disable-next-line no-useless-return
-    return
   } catch (error) {
     console.error(error)
     return res.status(500).json({ message: 'Error al subir la imagen' })
@@ -62,8 +60,6 @@ export async function uploadBannerAndImage (req: Request, res: Response, next: N
     }
 
     next()
-    // eslint-disable-next-line no-useless-return
-    return
   } catch (error) {
     console.error(error)
     return res.status(500).json({ message: 'Error al subir la imagen' })
@@ -85,8 +81,6 @@ export async function uploadMultipleImages (req: Request, res: Response, next: N
     req.body.images = images.map(image => image.toJSON())
 
     next()
-    // eslint-disable-next-line no-useless-return
-    return
   } catch (error) {
     console.error(error)
     return res.status(500).json({ message: 'Error al subir la imagen' })
