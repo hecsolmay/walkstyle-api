@@ -210,9 +210,7 @@ export function mapCategoryProductAttributes (categoryProduct: CategoryProductsA
   const { product } = categoryProduct
 
   if (product !== undefined) {
-    return {
-      product: mapProductAttributes(product)
-    }
+    return mapProductAttributes(product)
   }
 
   return categoryProduct

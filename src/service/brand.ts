@@ -1,19 +1,19 @@
-import { DEFAULT_PAGINATION_WITH_SEARCH } from '@/constanst'
-import { ORDER_TYPES } from '@/constanst/order'
-
 import Brand from '@/models/Brand'
 import Image from '@/models/Image'
-import { type QueryWithDeleted } from '@/types/queries'
+import { type QueryWithDeletedSort } from '@/types/queries'
 import { type BrandDTO } from '@/types/schemas'
+import { getCommonOrder } from '@/utils/sort-query'
 import { Op, literal } from 'sequelize'
 
 export async function GetAll ({
   limit = 10,
   offset = 0,
   q = '',
-  getDeleted
-}: QueryWithDeleted = DEFAULT_PAGINATION_WITH_SEARCH) {
+  getDeleted,
+  order = 'recents'
+}: QueryWithDeletedSort) {
   const deleted = Boolean(getDeleted)
+  const orderSort = getCommonOrder({ order })
 
   const { count, rows: brand } = await Brand.findAndCountAll({
     attributes: {
@@ -25,7 +25,7 @@ export async function GetAll ({
         )`), 'productsCount']
       ]
     },
-    order: [ORDER_TYPES.createdAtDesc],
+    order: [orderSort],
     include: [
       { model: Image, as: 'image' },
       { model: Image, as: 'banner' }

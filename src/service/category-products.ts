@@ -47,7 +47,7 @@ export async function getAllProductsByCategory ({ categoryId = '', limit = 10, o
   const orderInput = order as any
   const orderSorted = getOrderProducts({ order: orderInput })
 
-  const products = await ProductCategory.findAll({
+  const productsPromise = ProductCategory.findAll({
     limit,
     offset,
     include: [
@@ -73,11 +73,13 @@ export async function getAllProductsByCategory ({ categoryId = '', limit = 10, o
     }
   })
 
-  const count = await ProductCategory.count({
+  const countPromise = await ProductCategory.count({
     where: {
       categoryId
     }
   })
+
+  const [count, products] = await Promise.all([countPromise, productsPromise])
 
   return { count, products }
 }

@@ -31,10 +31,16 @@ export interface RequestWithUser extends Request {
   user: UserAttributes
 }
 
-export type OrderProductsQuery = 'recents' | 'price-asc' | 'price-desc' | 'name-asc' | 'name-desc'
+export type OrderDatesQuery = 'recents' | 'oldest'
+export type OrderCommonQuery = OrderDatesQuery | 'name-asc' | 'name-desc'
+export type OrderProductsQuery = OrderCommonQuery | 'price-asc' | 'price-desc'
 export interface ProductPaginationWithSearch extends PaginationWithSearch {
   order?: OrderProductsQuery
 }
 export interface ProductQueryWithDeleted extends ProductPaginationWithSearch {
   getDeleted?: boolean
+}
+
+export interface QueryWithDeletedSort extends QueryWithDeleted {
+  order?: OrderCommonQuery
 }

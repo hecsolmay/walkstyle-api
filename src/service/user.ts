@@ -1,5 +1,6 @@
 import { DEFAULT_PAGINATION_WITH_SEARCH } from '@/constanst'
 import { ROLE as RoleEnum } from '@/constanst/enums'
+import { ORDER_TYPES } from '@/constanst/order'
 import Role from '@/models/Role'
 import User from '@/models/User'
 import { type UserCreateDTO } from '@/types/createDto'
@@ -21,6 +22,7 @@ export async function GetAll ({
       attributes: ['name']
     },
     limit,
+    order: [ORDER_TYPES.createdAtDesc],
     offset,
     where: {
       [Op.or]: [

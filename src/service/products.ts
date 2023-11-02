@@ -23,7 +23,7 @@ export async function GetAll ({
 }: ProductQueryWithDeleted = DEFAULT_PAGINATION_WITH_SEARCH) {
   const deleted = Boolean(getDeleted)
   const orderSort = getOrderProducts({ order })
-  const products = await Product.findAll({
+  const productsPromise = Product.findAll({
     offset,
     limit,
     order: [orderSort],
@@ -47,9 +47,16 @@ export async function GetAll ({
     paranoid: !deleted
   })
 
-  const count = await Product.count({
-    paranoid: !deleted
+  const countPromise = Product.count({
+    paranoid: !deleted,
+    where: {
+      name: {
+        [Op.like]: `%${q}%`
+      }
+    }
   })
+
+  const [products, count] = await Promise.all([productsPromise, countPromise])
 
   return { products, count }
 }
@@ -69,7 +76,7 @@ export async function GetAllByBrand ({
   const deleted = Boolean(getDeleted)
   const orderSort = getOrderProducts({ order })
 
-  const products = await Product.findAll({
+  const productsPromise = Product.findAll({
     offset,
     limit,
     order: [orderSort],
@@ -91,12 +98,14 @@ export async function GetAllByBrand ({
     paranoid: !deleted
   })
 
-  const count = await Product.count({
+  const countPromise = await Product.count({
     where: {
       brandId
     },
     paranoid: !deleted
   })
+
+  const [products, count] = await Promise.all([productsPromise, countPromise])
 
   return { products, count }
 }
@@ -116,7 +125,7 @@ export async function GetAllProductsByGender ({
   const deleted = Boolean(getDeleted)
   const orderSort = getOrderProducts({ order })
 
-  const products = await Product.findAll({
+  const productsPromise = Product.findAll({
     offset,
     limit,
     order: [orderSort],
@@ -138,12 +147,14 @@ export async function GetAllProductsByGender ({
     paranoid: !deleted
   })
 
-  const count = await Product.count({
+  const countPromise = await Product.count({
     where: {
       genderId
     },
     paranoid: !deleted
   })
+
+  const [products, count] = await Promise.all([productsPromise, countPromise])
 
   return { products, count }
 }

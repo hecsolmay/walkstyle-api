@@ -12,8 +12,9 @@ export async function getBrands (req: Request, res: Response) {
   try {
     const pagination = validatePagination(req.query)
     const query = validateSearch(req.query)
+    const order = req.query.order as any
 
-    const { brand, count } = await GetAll({ ...pagination, ...query })
+    const { brand, count } = await GetAll({ ...pagination, ...query, order })
 
     const mappedBrands = brand.map((brand) => mapBrandsAttributes(brand.toJSON()))
 

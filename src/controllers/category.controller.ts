@@ -11,8 +11,9 @@ export async function getCategories (req: Request, res: Response) {
   try {
     const pagination = validatePagination(req.query)
     const query = validateSearch(req.query)
+    const order = req.query.order as any
 
-    const { categories, count } = await GetAll({ ...pagination, ...query })
+    const { categories, count } = await GetAll({ ...pagination, ...query, order })
 
     const mappedCategories = categories.map(category => mapCategoryAttributes(category.toJSON()))
 

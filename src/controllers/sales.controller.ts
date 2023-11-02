@@ -8,7 +8,8 @@ import { type Request, type Response } from 'express'
 export async function getSales (req: Request, res: Response) {
   try {
     const pagination = validatePagination(req.query)
-    const { count, sales } = await GetAll(pagination)
+    const order = req.query.order as any
+    const { count, sales } = await GetAll({ ...pagination, order })
 
     const info = getInfoPagination({ ...pagination, count })
 

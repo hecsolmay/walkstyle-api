@@ -9,16 +9,24 @@ import SaleProduct from '@/models/Sale-Product'
 import Size from '@/models/Size'
 import User from '@/models/User'
 import { GetById as GetSizeById } from '@/service/size'
-import { type PaginationQuery } from '@/types/queries'
+import { type OrderDatesQuery, type PaginationQuery } from '@/types/queries'
 import { type SizeSaleDTO } from '@/types/schemas'
 import { NotFoundError, UnexpectedError } from '@/utils/errors'
+import { getDateOrder } from '@/utils/sort-query'
 
 const excludeTimeStamps = ['createdAt', 'updatedAt', 'deletedAt']
 
+interface PaginationWithOrder extends PaginationQuery {
+  order?: OrderDatesQuery
+}
+
 export async function GetAll ({
   limit = 10,
-  offset = 0
-}: PaginationQuery) {
+  offset = 0,
+  order = 'recents'
+}: PaginationWithOrder) {
+  const sortedOrder = getDateOrder({ order })
+
   const { count, rows: sales } = await Sale.findAndCountAll({
     attributes: { exclude: ['deletedAt'] },
     include: [
@@ -43,6 +51,7 @@ export async function GetAll ({
       }
     ],
     offset,
+    order: [sortedOrder],
     limit,
     paranoid: false
   })
