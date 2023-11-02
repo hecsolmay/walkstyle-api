@@ -1,10 +1,11 @@
 import { DEFAULT_PAGINATION_WITH_SEARCH } from '@/constanst'
+import { ORDER_TYPES } from '@/constanst/order'
 
 import Brand from '@/models/Brand'
 import Image from '@/models/Image'
 import { type QueryWithDeleted } from '@/types/queries'
 import { type BrandDTO } from '@/types/schemas'
-import { Op } from 'sequelize'
+import { Op, literal } from 'sequelize'
 
 export async function GetAll ({
   limit = 10,
@@ -15,6 +16,16 @@ export async function GetAll ({
   const deleted = Boolean(getDeleted)
 
   const { count, rows: brand } = await Brand.findAndCountAll({
+    attributes: {
+      include: [
+        [literal(`(
+          SELECT COUNT(*)
+          FROM products
+          WHERE products.brandId = brands.brand_id
+        )`), 'productsCount']
+      ]
+    },
+    order: [ORDER_TYPES.createdAtDesc],
     include: [
       { model: Image, as: 'image' },
       { model: Image, as: 'banner' }

@@ -42,10 +42,11 @@ export function mapUserAttributes (user: UserAttributes, timeStamps = false) {
 }
 
 export function mapCategoryAttributes (category: CategoryAttributes, timeStamps = false) {
-  const { categoryId, name, banner, image, createdAt, deletedAt, updatedAt } = category
+  const { categoryId, name, banner, productsCount = 0, image, createdAt, deletedAt, updatedAt } = category
 
   const response = {
     categoryId,
+    productsCount,
     name,
     banner: mapImageAtributes(banner),
     image: mapImageAtributes(image)
@@ -66,11 +67,12 @@ export function mapCategoryAttributes (category: CategoryAttributes, timeStamps 
 }
 
 export function mapBrandsAttributes (brand: BrandAttributes, timeStamps = false) {
-  const { brandId, name, banner, image, createdAt, deletedAt, updatedAt } = brand
+  const { brandId, name, banner, productsCount = 0, image, createdAt, deletedAt, updatedAt } = brand
 
   const response = {
     brandId,
     name,
+    productsCount,
     banner: mapImageAtributes(banner),
     image: mapImageAtributes(image)
   }

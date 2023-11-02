@@ -43,6 +43,7 @@ export interface ProductAttributes extends TimeStamps {
 export interface BrandAttributes extends BannerAndImage, TimeStamps {
   brandId?: string
   name: string
+  productsCount?: number
 }
 
 export interface SizeAttributes extends TimeStamps {
@@ -57,6 +58,7 @@ export interface SizeAttributes extends TimeStamps {
 export interface CategoryAttributes extends BannerAndImage, TimeStamps {
   categoryId?: string
   name: string
+  productsCount?: number
 }
 
 export interface RoleAttributes extends TimeStamps {

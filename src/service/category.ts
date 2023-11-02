@@ -1,9 +1,10 @@
 import { DEFAULT_PAGINATION_WITH_SEARCH } from '@/constanst'
+import { ORDER_TYPES } from '@/constanst/order'
 import Category from '@/models/Category'
 import Image from '@/models/Image'
 import { type QueryWithDeleted } from '@/types/queries'
 import { type CategoryDTO } from '@/types/schemas'
-import { Op } from 'sequelize'
+import { Op, literal } from 'sequelize'
 
 export async function GetAll ({
   limit = 10,
@@ -14,10 +15,23 @@ export async function GetAll ({
   const deleted = Boolean(getDeleted)
 
   const { count, rows: categories } = await Category.findAndCountAll({
+    attributes: {
+      include: [
+        [
+          literal(`(
+            SELECT COUNT(*) 
+            FROM product_category 
+            WHERE product_category.categoryId = categories.category_id
+          )`),
+          'productsCount'
+        ]
+      ]
+    },
     include: [
       { model: Image, as: 'image' },
       { model: Image, as: 'banner' }
     ],
+    order: [ORDER_TYPES.createdAtDesc],
     offset,
     limit,
     where: {
