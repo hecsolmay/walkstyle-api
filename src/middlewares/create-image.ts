@@ -22,6 +22,7 @@ export async function uploadOneImage (req: Request, res: Response, next: NextFun
   try {
     const imageFile = req.file
     if (imageFile === undefined) {
+      req.body.image = {}
       next()
       return
     }
