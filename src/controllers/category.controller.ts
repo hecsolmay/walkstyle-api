@@ -75,7 +75,7 @@ export async function getProductsByCategory (req: Request, res: Response) {
     const info = getInfoPagination({ ...pagination, count })
     const mappedProducts = products.map(product => mapCategoryProductAttributes(product.toJSON()))
 
-    return res.status(200).json({ info, products: mappedProducts })
+    return res.status(200).json({ info, products: mappedProducts, category: category.name })
   } catch (error) {
     return handleError(error, res)
   }

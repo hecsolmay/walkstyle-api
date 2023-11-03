@@ -77,7 +77,7 @@ export async function getProductsByBrand (req: Request, res: Response) {
 
     const mappedProducts = products.map((product) => mapProductAttributes(product.toJSON()))
 
-    return res.status(200).json({ info, products: mappedProducts })
+    return res.status(200).json({ info, products: mappedProducts, brand: brand.name })
   } catch (error) {
     return handleError(error, res)
   }
