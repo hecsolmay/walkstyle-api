@@ -1,20 +1,22 @@
 import { DEFAULT_PAGINATION_WITH_SEARCH } from '@/constanst'
 import { ROLE as RoleEnum } from '@/constanst/enums'
-import { ORDER_TYPES } from '@/constanst/order'
 import Role from '@/models/Role'
 import User from '@/models/User'
 import { type UserCreateDTO } from '@/types/createDto'
-import { type QueryWithDeleted } from '@/types/queries'
+import { type QueryWithDeletedSort } from '@/types/queries'
 import { UnexpectedError } from '@/utils/errors'
+import { getCommonOrder } from '@/utils/sort-query'
 import { Op } from 'sequelize'
 
 export async function GetAll ({
   limit = 10,
   offset = 0,
   q = '',
-  getDeleted
-}: QueryWithDeleted = DEFAULT_PAGINATION_WITH_SEARCH) {
+  getDeleted,
+  order = 'recents'
+}: QueryWithDeletedSort = DEFAULT_PAGINATION_WITH_SEARCH) {
   const deleted = Boolean(getDeleted)
+  const sortOrder = getCommonOrder({ order })
 
   const { count, rows: users } = await User.findAndCountAll({
     include: {
@@ -22,7 +24,7 @@ export async function GetAll ({
       attributes: ['name']
     },
     limit,
-    order: [ORDER_TYPES.createdAtDesc],
+    order: [sortOrder],
     offset,
     where: {
       [Op.or]: [
@@ -141,4 +143,14 @@ export async function RestoreById (userId?: string) {
   await user.restore()
 
   return user
+}
+
+export async function CountUsers (
+  { getDeleted = false }: { getDeleted?: boolean } = {}
+) {
+  const deleted = Boolean(getDeleted)
+  const count = await User.count({
+    paranoid: !deleted
+  })
+  return count
 }

@@ -264,3 +264,13 @@ export async function UpdateById ({ newProduct, productId }: UpdateProduct) {
 
   return updatedCount
 }
+
+export async function CountProducts (
+  { getDeleted = false }: { getDeleted?: boolean } = {}
+) {
+  const deleted = Boolean(getDeleted)
+  const count = await Product.count({
+    paranoid: !deleted
+  })
+  return count
+}

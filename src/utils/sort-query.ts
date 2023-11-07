@@ -1,5 +1,5 @@
 import { ORDER_TYPES } from '@/constanst/order'
-import { type OrderDatesQuery, type OrderCommonQuery, type OrderProductsQuery } from '@/types/queries'
+import { type OrderCommonQuery, type OrderDatesQuery, type OrderProductsQuery } from '@/types/queries'
 import { type OrderItem } from 'sequelize'
 
 const orderProducts: Record<OrderProductsQuery, OrderItem> = {
@@ -37,4 +37,22 @@ const orderDates: Record<OrderDatesQuery, OrderItem> = {
 
 export function getDateOrder ({ order = 'recents' }: { order?: OrderDatesQuery }) {
   return orderDates[order] ?? orderDates.recents
+}
+
+export function parseDateString (string?: string | Date) {
+  if (string === undefined) {
+    return new Date()
+  }
+
+  if (typeof string === 'string') {
+    const dateParsed = Date.parse(string)
+
+    if (isNaN(dateParsed)) {
+      return new Date()
+    }
+
+    return new Date(Date.parse(string))
+  }
+
+  return string
 }

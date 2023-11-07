@@ -12,8 +12,9 @@ export async function getUsers (req: Request, res: Response) {
   try {
     const pagination = validatePagination(req.query)
     const query = validateSearch(req.query)
+    const order = req.query.order ?? '' as any
 
-    const { users, count } = await GetAll({ ...pagination, ...query })
+    const { users, count } = await GetAll({ ...pagination, ...query, order })
 
     const mappedUser = users.map((user) => mapUserAttributes(user.toJSON()))
 
@@ -29,8 +30,9 @@ export async function getusersDeleted (req: Request, res: Response) {
   try {
     const pagination = validatePagination(req.query)
     const query = validateSearch(req.query)
+    const order = req.query.order ?? '' as any
 
-    const { users, count } = await GetAll({ ...pagination, ...query, getDeleted: true })
+    const { users, count } = await GetAll({ ...pagination, ...query, getDeleted: true, order })
     const mappedUser = users.map((users) => mapUserAttributes(users.toJSON(), true))
 
     const info = getInfoPagination({ ...pagination, count })
