@@ -10,7 +10,7 @@ import { type Request, type Response } from 'express'
 export async function GetInfoDashboard (req: Request, res: Response) {
   try {
     const dateStart = parseDateString(req.query.dateStart as string)
-    dateStart.setDate(1)
+    dateStart.setDate(0)
     dateStart.setHours(0, 0, 0, 0)
     const dateEnd = parseDateString(req.query.dateEnd as string)
 

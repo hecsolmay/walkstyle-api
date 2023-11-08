@@ -181,7 +181,7 @@ export async function GetTotalSales (
     }
   })
 
-  return totalSales
+  return totalSales ?? 0
 }
 
 export async function GetTopSellingProducts (
@@ -190,13 +190,13 @@ export async function GetTopSellingProducts (
   const topSellingProductsQuery = `
   SELECT p.product_id as productId, p.name, (
     SELECT IFNULL(SUM(sp.quantity), 0)
-    FROM walkstyle.sale_products AS sp
-    INNER JOIN walkstyle.sizes AS s
+    FROM sale_products AS sp
+    INNER JOIN sizes AS s
     ON sp.sizeId = s.size_id
     WHERE s.productId = p.product_id
     AND sp.createdAt BETWEEN :dateStart AND :dateEnd
   ) AS totalSales
-  FROM walkstyle.products AS p
+  FROM products AS p
   GROUP BY p.product_id
   ORDER BY totalSales ${order}
   LIMIT 5;
