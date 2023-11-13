@@ -10,7 +10,6 @@ import { type Request, type Response } from 'express'
 export async function GetInfoDashboard (req: Request, res: Response) {
   try {
     const dateStart = parseDateString(req.query.dateStart as string)
-    dateStart.setDate(0)
     dateStart.setHours(0, 0, 0, 0)
     const dateEnd = parseDateString(req.query.dateEnd as string)
 
@@ -46,7 +45,7 @@ export async function GetLatestInfo (req: Request, res: Response) {
     const mappedSales = sales.map(sale => mapSaleAttributes(sale.toJSON()))
 
     const { users } = latestUsers
-    const mappedUsers = users.map(user => mapUserAttributes(user.toJSON()))
+    const mappedUsers = users.map(user => mapUserAttributes(user.toJSON(), true))
 
     return res.json({ sales: mappedSales, users: mappedUsers })
   } catch (error) {

@@ -28,7 +28,7 @@ export async function GetAll ({
 }: PaginationWithOrder) {
   const sortedOrder = getDateOrder({ order })
 
-  const { count, rows: sales } = await Sale.findAndCountAll({
+  const salesPromise = Sale.findAll({
     attributes: { exclude: ['deletedAt'] },
     include: [
       { model: User, attributes: { exclude: ['deletedAt'] }, paranoid: false },
@@ -56,6 +56,10 @@ export async function GetAll ({
     limit,
     paranoid: false
   })
+
+  const countPromise = Sale.count()
+
+  const [sales, count] = await Promise.all([salesPromise, countPromise])
 
   return { count, sales }
 }
