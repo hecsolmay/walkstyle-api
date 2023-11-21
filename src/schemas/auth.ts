@@ -53,3 +53,30 @@ export const refreshTokenSchema = z.object({
 export function parseRefreshToken (input: any) {
   return refreshTokenSchema.safeParse(input)
 }
+
+// export interface GoogleUser {
+//   name: string
+//   email: string
+//   picture?: string
+// }
+
+export const googleSignInSchema = z.object({
+  name: z.string({
+    required_error: 'El campo name no puede estar vacío.',
+    invalid_type_error: 'El campo name debe ser un string.'
+  }),
+  email: z.string({
+    required_error: 'El campo email no puede estar vacío.',
+    invalid_type_error: 'El campo email debe ser un string.'
+  }).email({
+    message: 'El campo email debe ser un correo válido.'
+  }),
+  picture: z.string({
+    required_error: 'El campo picture no puede estar vacío.',
+    invalid_type_error: 'El campo picture debe ser un string.'
+  }).nullable().optional().default(null)
+})
+
+export function validateGoogleSignIn (input: any) {
+  return googleSignInSchema.safeParse(input)
+}

@@ -48,7 +48,12 @@ export async function GetById (userId?: string) {
   return user
 }
 
-export async function Create (user: UserCreateDTO) {
+interface UserCreate extends Omit<UserCreateDTO, 'password'> {
+  profileUrl?: string | null
+  password?: string
+}
+
+export async function Create (user: UserCreate) {
   const { role = RoleEnum.USER, ...rest } = user
   const foundRole = await Role.findOne({
     where: {

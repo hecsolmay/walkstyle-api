@@ -1,4 +1,4 @@
-import { parseRefreshToken, validateLogin, validateRegister } from '@/schemas/auth'
+import { parseRefreshToken, validateGoogleSignIn, validateLogin, validateRegister } from '@/schemas/auth'
 import * as services from '@/service/user'
 import { ZodValidationError, handleError } from '@/utils/errors'
 import { refreshTokenSign, refreshTokenVerify, tokenSign } from '@/utils/jwtoken'
@@ -31,6 +31,47 @@ export async function login (req: Request, res: Response) {
     const mappedUser = mapUserAttributes(user.toJSON())
 
     return res.status(200).json({ user: mappedUser, token })
+  } catch (error) {
+    return handleError(error, res)
+  }
+}
+
+export async function googleSignIn (req: Request, res: Response) {
+  try {
+    const result = validateGoogleSignIn(req.body)
+
+    if (!result.success) {
+      throw new ZodValidationError(result.error)
+    }
+
+    const { data } = result
+
+    const existingUser = await services.GetOne({ email: data.email })
+
+    let newUser = existingUser
+
+    if (existingUser === null) {
+      newUser = await services.Create({
+        name: data.name,
+        email: data.email,
+        profileUrl: data.picture
+      })
+
+      const refreshToken = refreshTokenSign(newUser.userId ?? '')
+      await newUser.update({ rememberToken: refreshToken })
+    }
+
+    const userWithRole = await services.GetById(newUser?.userId ?? '')
+
+    if (userWithRole === null) {
+      return res.status(400).json({ message: 'Hubo un error al procesar su solicitud' })
+    }
+
+    const mappedUser = mapUserAttributes(userWithRole.toJSON())
+
+    const token = tokenSign(userWithRole.userId ?? '')
+
+    return res.status(200).json({ message: 'Inicio de session exitoso', user: mappedUser, token })
   } catch (error) {
     return handleError(error, res)
   }
