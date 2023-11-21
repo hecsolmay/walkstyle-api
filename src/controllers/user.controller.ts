@@ -71,7 +71,7 @@ export async function updateUserById (req: Request, res: Response) {
       email: newUser.email ?? ''
     })
 
-    if (existedUser !== null && existedUser.userId !== req.params.sizeId) {
+    if (existedUser !== null && existedUser.userId !== req.params.userId) {
       return res.status(409).json({ message: 'User already exists' })
     }
 
